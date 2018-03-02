@@ -40,3 +40,4 @@ geostd8,GEOSTD8 Georgian,geostd8_general_ci,1
 cp932,SJIS for Windows Japanese,cp932_japanese_ci,2
 eucjpms,UJIS for Windows Japanese,eucjpms_japanese_ci,3
 gb18030,China National Standard GB18030,gb18030_chinese_ci,4
+braille,Blind Braille Unicode,braille_general_ci,3
