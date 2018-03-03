@@ -29,8 +29,8 @@
     define('OE4_NOHTML', true);
 	require_once __DIR__ . DIRECTORY_SEPARATOR . 'header.php';
     
-	error_reporting(0);
-	ini_set('display_errors', false);
+	error_reporting(E_ERROR);
+	ini_set('display_errors', true);
 	set_time_limit(3600*36*9*14*28);
 	
 	//echo "Processed Upload Form Fine<br/>";
@@ -86,16 +86,23 @@
 	    $error[] = 'No Converter\'s organisation URL not specified in survey scope when selected!';
 	}
 	
-	$uploadpath = constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . ($key = md5($inner['email'] . DIRECTORY_SEPARATOR . microtime(true)));
+	$basepath = constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4';
+	if (!is_dir($basepath)) {
+	    if (!mkdirSecure($basepath, 0777, true)) {
+	        $error[] = 'Unable to make path: '.$basepath;
+	    }
+	}
+	
+	$uploadpath = $basepath . DIRECTORY_SEPARATOR . ($key = md5($inner['email'] . DIRECTORY_SEPARATOR . microtime(true)));
 	if (!is_dir($uploadpath)) {
-		if (!mkdir($uploadpath, 0777, true)) {
+		if (!mkdirSecure($uploadpath, 0777, true)) {
 			$error[] = 'Unable to make path: '.$uploadpath;
 		}
 	}
 	
-	$oe4path = constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . ($key . '.oe4');
+	$oe4path = $basepath . DIRECTORY_SEPARATOR . ($key . '.oe4');
 	if (!is_dir($oe4path)) {
-	    if (!mkdir($oe4path, 0777, true)) {
+	    if (!mkdirSecure($oe4path, 0777, true)) {
 	        $error[] = 'Unable to make path: ' . $oe4path;
 	    }
 	}
@@ -115,13 +122,13 @@
 		redirect(isset($inner['return'])&&!empty($inner['return'])?$inner['return']:'http://'. $_SERVER["HTTP_HOST"], 9, "<center><h1 style='color:rgb(198,0,0);'>Uploading Error Has Occured</h1><br/><p>Fonts API was unable to recieve and store: <strong>".$_FILES[$inner['field']]['name']."</strong>!</p></center>");
 		exit(0);
 	} else 
-	    $success['font'] = array('unixtime' => time(), 'file' => $_FILES[$inner['field']]['name'], 'mime-type' => $_FILES[$inner['field']]['media_type']);
+	    $success['font'] = array('unixtime' => time(), 'file' => $_FILES[$inner['field']]['name'], 'mime-type' => $_FILES[$inner['field']]['type']);
 	
     if (!move_uploaded_file($_FILES['logo']['tmp_name'], $file['logo'] = $uploadpath . DIRECTORY_SEPARATOR . ($uploader['logo'] = $_FILES['logo']['name']))) {
 	    redirect(isset($inner['return'])&&!empty($inner['return'])?$inner['return']:'http://'. $_SERVER["HTTP_HOST"], 9, "<center><h1 style='color:rgb(198,0,0);'>Uploading Error Has Occured</h1><br/><p>Fonts API was unable to recieve and store: <strong>".$_FILES[$inner['field']]['name']."</strong>!</p></center>");
 	    exit(0);
 	} else
-	    $success['logo'] = array('unixtime' => time(), 'file' => $_FILES['logo']['name'], 'mime-type' => $_FILES['logo']['media_type']);
+	    $success['logo'] = array('unixtime' => time(), 'file' => $_FILES['logo']['name'], 'mime-type' => $_FILES['logo']['type']);
 	    
 	if (!empty($error))
 	{
@@ -140,13 +147,13 @@
 	if (file_exists($fontinfo = $uploadpath . DIRECTORY_SEPARATOR . $fill . '.ufo' . DIRECTORY_SEPARATOR . 'fontinfo.plist')) {
 	   //$fontdata = xml2array(file_get_contents($fontinfo), true, 'key');
 	    $fontvalues = xml2array($xml = file_get_contents($fontinfo));
-	    $fontdata['EO4']['basename'] = $fill;
-	    $fontdata['EO4']['name'] = $inner['name'];
-	    $fontdata['EO4']['email'] = $inner['email'];
-	    $fontdata['EO4']['url'] = $inner['url'];
-	    $fontdata['EO4']['logo-image']['mime-type'] = $success['mime-type'];
-	    $fontdata['EO4']['logo-image']['encoding'] = 'base64';
-	    $fontdata['EO4']['logo-image']['image'] = base64_encode(file_get_contents($file['logo']));
+	    $fontdata['OE4']['Basename'] = $fill;
+	    $fontdata['OE4']['Name'] = $inner['name'];
+	    $fontdata['OE4']['Email'] = $inner['email'];
+	    $fontdata['OE4']['Url'] = $inner['url'];
+	    $fontdata['OE4']['Logo-image']['mime-type'] = $success['mime-type'];
+	    $fontdata['OE4']['Logo-image']['encoding'] = 'base64';
+	    $fontdata['OE4']['Logo-image']['image'] = base64_encode(file_get_contents($file['logo']));
 	    foreach($fontvalues['plist']['dict']['key'] as $id => $fieldkey)
 	    {
 	        if ($ipos = strpos($xml, $needle = "    <key>$fieldkey</key>\n    "))
@@ -259,26 +266,26 @@
 	                case 'advance':
 	                    foreach($gvalues['@attributes'] as $fkey => $fvalue)
 	                    {
-	                        $glyph['advance'][formatElement($fkey)] = $fvalue;
-	                        if (formatElement($fkey)=='Hex')
-	                            $characters[$hex = $fvalue] = $hex;
+	                        $glyph['Advance'][formatElement($fkey)] = $fvalue;
 	                    }
 	                    unset($gvalues['@attributes']);
 	                    foreach($gvalues as $fkey => $fvalue)
 	                    {
-	                        $glyph['advance'][formatElement($fkey)] = $fvalue;
+	                        $glyph['Advance'][formatElement($fkey)] = $fvalue;
 	                    }
-	                    $glyph['advance'][formatElement('depth')] = false;
+	                    $glyph['Advance'][formatElement('depth')] = false;
 	                    break;
 	                case 'unicode':
 	                    foreach($gvalues['@attributes'] as $fkey => $fvalue)
 	                    {
-	                        $glyph['unicode'][formatElement($fkey)] = $fvalue;
+	                        $glyph['Unicode'][formatElement($fkey)] = $fvalue;
+	                        if (formatElement($fkey)=='Hex')
+	                            $characters[] = $hex = $fvalue;
 	                    }
 	                    unset($gvalues['@attributes']);
 	                    foreach($gvalues as $fkey => $fvalue)
 	                    {
-	                        $glyph['unicode'][formatElement($fkey)] = $fvalue;
+	                        $glyph['Unicode'][formatElement($fkey)] = $fvalue;
 	                    }
 	                    break;
 	                case 'outline':
@@ -288,16 +295,16 @@
 	                        {
 	                            foreach($pvalue['@attributes'] as $fkey => $fvalue)
 	                            {
-	                                $glyph['contour'][$ckey]['point'][$pkey][formatElement($fkey)] = $fvalue;
+	                                $glyph['Contour'][$ckey]['Point'][$pkey][formatElement($fkey)] = $fvalue;
 	                                if (formatElement($fkey) == 'Y') {
-	                                    $glyph['contour'][$ckey]['point'][$pkey]['Z'] = false;
-	                                    $glyph['contour'][$ckey]['point'][$pkey]['D'] = false;
+	                                    $glyph['Contour'][$ckey]['Point'][$pkey]['Z'] = false;
+	                                    $glyph['Contour'][$ckey]['Point'][$pkey]['D'] = false;
 	                                }
 	                            }
 	                            unset($pvalue['@attributes']);
 	                            foreach($pvalue as $fkey => $fvalue)
 	                            {
-	                                $glyph['contour'][$ckey]['point'][$pkey][formatElement($fkey)] = $fvalue;
+	                                $glyph['Contour'][$ckey]['Point'][$pkey][formatElement($fkey)] = $fvalue;
 	                            }
 	                        }
 	                    }
@@ -308,7 +315,7 @@
 	                        switch($ckey)
 	                        {
 	                            case "key":
-	                                $glyph['library'][formatElement($ckey)] = $cvalue;
+	                                $glyph['Library'][formatElement($ckey)] = $cvalue;
 	                                break;
 	                            case "dict":
 	                                foreach($cvalue['dict'] as $pkey => $pvalue)
@@ -316,8 +323,8 @@
 	                                    switch($ckey)
 	                                    {
 	                                        case "key":
-	                                            $glyph['library']['dictionary'][formatElement($ckey)][formatElement($pkey)] = $pvalue;
-	                                            $glyph['library']['dictionary'][formatElement($ckey)][formatElement($pkey)][] = 'dhints'; 
+	                                            $glyph['Library']['Dictionary'][formatElement($ckey)][formatElement($pkey)] = $pvalue;
+	                                            $glyph['Library']['Dictionary'][formatElement($ckey)][formatElement($pkey)][] = 'dhints'; 
 	                                            break;
 	                                        case "array":                                     
         	                                    foreach($pvalue['array'] as $fkey => $fvalue)
@@ -328,7 +335,7 @@
         	                                            $dvalue['key'][] = 'scale';
         	                                            $dvalue['integer'][] = '0';
         	                                            $dvalue['integer'][] = '0.0';
-        	                                            $glyph['library']['dictionary'][formatElement($ckey)][formatElement($pkey)][formatElement($fkey)]['dictionary'][formatElement($dkey)] = $dvalue;
+        	                                            $glyph['Library']['Dictionary'][formatElement($ckey)][formatElement($pkey)][formatElement($fkey)]['Dictionary'][formatElement($dkey)] = $dvalue;
         	                                        }
         	                                    }
         	                                    
@@ -338,15 +345,19 @@
 	                        }
 	                        
 	                    }
-	                    writeRawFile($glyphpath . DIRECTORY_SEPARATOR . $hex . '.json', json_encode($glyph));
-	                    
 	                    break;
 	            }
 	        }
+	        writeRawFile($glyphpath . DIRECTORY_SEPARATOR . $hex . '.json', json_encode($glyph));
 	    }
 	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'files.json', json_encode($file));
 	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'success.json', json_encode($success));
+	    sort($characters = array_unique($characters));
 	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'glyphs.json', json_encode($characters));
+	    if (!isset($fontdata['Version-Major']) && !isset($fontdata['Version-Minor'])) {
+	        $fontdata['Version-Major'] = 1;
+	        $fontdata['Version-Minor'] = 0;
+	    }
 	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'fontinfo.json', json_encode($fontdata));
 	} else 
 	    die("File Not Found: $fontinfo");

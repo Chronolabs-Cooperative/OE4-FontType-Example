@@ -1,7 +1,7 @@
 ## Chronolabs Cooperative presents
 # OE4 Font File Type Generator Example  
 ## Version: 1.0.1
-## by. Dr. Simon Antony Roberts (Sydney) <fontmaster@snails.email>
+## by. Dr. Simon Antony Roberts (Sydney) <fontmasters@snails.email>
 ### The font file type OE4 File Format Generation Example
 
 # Foreword
@@ -15,6 +15,7 @@ This example of files will guide you in reading as well as utilising this font f
 You need to install the following on Ubuntu/Debian
 
     $ apt-get install php-xml fontforge
+    $ service apache2 restart
 
 ## Mod Rewrite (Short URLs)
 

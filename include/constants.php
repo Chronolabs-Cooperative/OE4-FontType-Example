@@ -31,7 +31,7 @@
     define('OE4_TMP', dirname(__DIR__) . '/data');
     define('OE4_CHARSETS', __DIR__ . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'charactersets.csv');
     define('OE4_CONVERTPE', __DIR__ . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'convert-fonts-ufo.pe');
-    define('OE4_EVAL_COMPRESS', 'return gzcompress(%s, 9);');
+    define('OE4_EVAL_COMPRESS', 'return gzcompress("%s", 9);');
     
     // Converted Field Seperators
     define('OE4_SEPARATOR', '||');
@@ -47,5 +47,15 @@
     define('OE4_DELETE_WHEN', (3600 * 2));
     define('OE4_DELETE_WARNING', (27 * 60));
     
-    
+    // EO4 File Headers
+    define('OE4_HEADER_MD5',                '%MD55678901234567890123456789012');
+    define('OE4_HEADER_GLOBAL',             '--[ Global Byte Allocation ]------------------------------------------------------[ %MD55678901234567890123456789012 ]--');
+    define('OE4_HEADER_HEADER',             '--[ Header ]----------------------------------------------------------------------[ %MD55678901234567890123456789012 ]--');
+    define('OE4_HEADER_CHARSETS',           '--[ Character Sets ]--------------------------------------------------------------[ %MD55678901234567890123456789012 ]--');
+    define('OE4_HEADER_CHARSET_ALLOCATE',   '--[ %charset Allocations ]--------------------------------------------------------[ %MD55678901234567890123456789012 ]--');
+    define('OE4_HEADER_FONTINFO_ALLOCATE',  '--[ FontInfo Allocations ]--------------------------------------------------------[ %MD55678901234567890123456789012 ]--');
+    define('OE4_HEADER_LICENSES_ALLOCATE',  '--[ Licenses Allocations ]--------------------------------------------------------[ %MD55678901234567890123456789012 ]--');
+    define('OE4_HEADER_FONTINFO_DATA',      '--[ FontInfo Data ]---------------------------------------------------------------[ %MD55678901234567890123456789012 ]--');
+    define('OE4_HEADER_LICENSES_DATA',      '--[ Licenses Data ]---------------------------------------------------------------[ %MD55678901234567890123456789012 ]--');
+    define('OE4_HEADER_CHARSET_DATA',       '--[ %charset Data ]---------------------------------------------------------------[ %MD55678901234567890123456789012 ]--');
 ?>

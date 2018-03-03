@@ -570,7 +570,7 @@ if (!function_exists("getHTMLForm")) {
      *
      * @return string
      */
-    function getHTMLForm($mode = '', $clause = '', $callback = '', $output = '', $version = 'v2')
+    function getHTMLForm($mode = '', $key = '', $data = array())
     {
         $ua = substr(sha1($_SERVER['HTTP_USER_AGENT']), mt_rand(0,32), 7);
         $form = array();
@@ -645,8 +645,8 @@ if (!function_exists("getHTMLForm")) {
                 $form[] = "</form>";
                 break;
             case "releases":
-                $form[] = "<form name=\"" . $ua . "\" method=\"POST\" enctype=\"multipart/form-data\" action=\"" . $GLOBALS['protocol'] . $_SERVER["HTTP_HOST"] . '/v2/' .$ua . "/releases.api\">";
-                $form[] = "\t<table class='font-releases' id='font-releases' style='vertical-align: top !important; min-width: 98%;'>";
+                $form[] = "<form name=\"" . $ua . "\" method=\"POST\" enctype=\"multipart/form-data\" action=\"" . OE4_URL . '/convert.php?key='.$key."\">";
+                $form[] = "\t<table class='oe4-convert' id='oe4-convert' style='vertical-align: top !important; min-width: 98%;'>";
                 $form[] = "\t\t\t<td style='width: 276px;'>";
                 $form[] = "\t\t\t\t<label for='email'>Release Recievers Email:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font></label>";
                 $form[] = "\t\t\t</td>";
@@ -730,7 +730,7 @@ if (!function_exists("mkdirSecure")) {
             mkdir($path, $perm, true);
             if ($secure == true)
             {
-                SaveToFile($path . DIRECTORY_SEPARATOR . '.htaccess', "<Files ~ \"^.*$\">\n\tdeny from all\n</Files>");
+                writeRawFile($path . DIRECTORY_SEPARATOR . '.htaccess', "<Files ~ \"^.*$\">\n\tdeny from all\n</Files>");
             }
             return true;
         }
