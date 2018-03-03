@@ -25,3 +25,16 @@
  *
  */
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'header.php';
+
+?>
+	<p>This PHP is a code library to show how *.EO4 Font files are generated as a binary file, you will be able to digress from this example the full functions of the both 2d, 3d, holographic and braille support of this font format!</p>
+	<p>Font Formats haven't been addressed for a long time, this is a modern font format that encompasses older formats with the dynamic library set of a modern convience and formats!</p>
+    <h2>Upload & Convert a Font File</h2>
+    <p>Use this form to commence conversion, this is 2 step, upload then select the conversion options and then process to be output a *.eo4 font file!</p>
+    <blockquote>
+    	<?php echo getHTMLForm('uploads'); ?>
+    </blockquote>
+<?php 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'footer.php';
+?>

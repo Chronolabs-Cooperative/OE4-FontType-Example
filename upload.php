@@ -32,111 +32,73 @@
 	ini_set('display_errors', true);
 	set_time_limit(3600*36*9*14*28);
 	
-	/**
-	 * URI Path Finding of API URL Source Locality
-	 * @var unknown_type
-	 */
-	$odds = $inner = array();
-	foreach($inner as $key => $values) {
-	    if (!isset($inner[$key])) {
-	        $inner[$key] = $values;
-	    } elseif (!in_array(!is_array($values) ? $values : md5(json_encode($values, true)), array_keys($odds[$key]))) {
-	        if (is_array($values)) {
-	            $odds[$key][md5(json_encode($inner[$key] = $values, true))] = $values;
-	        } else {
-	            $odds[$key][$inner[$key] = $values] = "$values--$key";
-	        }
-	    }
-	}
+	global $inner;
 	
-	foreach($_POST as $key => $values) {
-	    if (!isset($inner[$key])) {
-	        $inner[$key] = $values;
-	    } elseif (!in_array(!is_array($values) ? $values : md5(json_encode($values, true)), array_keys($odds[$key]))) {
-	        if (is_array($values)) {
-	            $odds[$key][md5(json_encode($inner[$key] = $values, true))] = $values;
-	        } else {
-	            $odds[$key][$inner[$key] = $values] = "$values--$key";
-	        }
-	    }
-	}
-	
-	foreach(parse_url('http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].(strpos($_SERVER['REQUEST_URI'], '?')?'&':'?').$_SERVER['QUERY_STRING'], PHP_URL_QUERY) as $key => $values) {
-	    if (!isset($inner[$key])) {
-	        $inner[$key] = $values;
-	    } elseif (!in_array(!is_array($values) ? $values : md5(json_encode($values, true)), array_keys($odds[$key]))) {
-	        if (is_array($values)) {
-	            $odds[$key][md5(json_encode($inner[$key] = $values, true))] = $values;
-	        } else {
-	            $odds[$key][$inner[$key] = $values] = "$values--$key";
-	        }
-	    }
-	}
-
 	//echo "Processed Upload Form Fine<br/>";
 	$time = time();
 	$error = array();
 	if (isset($inner['field']) || !empty($inner['field'])) {
 		if (empty($_FILES[$inner['field']]))
 			$error[] = 'No file uploaded in the correct field name of: "' . $inner['field'] . '"';
+		elseif (empty($_FILES['logo']))
+			$error[] = 'No file uploaded in the correct field name of: "logo"';
 		else {
 		    $formats = cleanWhitespaces(file(__DIR__ . DIRECTORY_SEPARATOR . 'include'  . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'font-converted.diz')); 
-			$packs = cleanWhitespaces(file(__DIR__ . DIRECTORY_SEPARATOR . 'include'  . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'packs-converted.diz'));
-			$extensions = array_unique(array_merge($formats, $packs));
-			sort($extensions);
 			$pass = false;
-			foreach($extensions as $xtension)
+			foreach($formats as $xtension)
 			{
 				if (strtolower(substr($_FILES[$inner['field']]['name'], strlen($_FILES[$inner['field']]['name'])- strlen($xtension))) == strtolower($xtension))
-					if (in_array($xtension, $formats))
-						$filetype = 'font';
-					else {
-						$filetype = 'pack';
-						$packtype = $xtension;
+					if (in_array($xtension, $formats)) {
+					    $filetype = $xtension;
+						$pass = true;
+						continue;
 					}
-					$pass=true;
-					continue;
 			}
 			if ($pass == false)
-				$error[] = 'The file extension type of <strong>'.$_FILES[$inner['field']]['name'].'</strong> is not valid you can only upload the following file types: <em>'.implode("</em>&nbsp;<em>*.", $extensions).'</em>!';
-		}
-	} else 
-		$error[] = 'File uploaded field name not specified in the URL!';
+				$error[] = 'The file extension type of <strong>'.$_FILES[$inner['field']]['name'].'</strong> is not valid you can only upload the following file types: <em>'.implode("</em>&nbsp;<em>*.", $formats).'</em>!';
 
-	if (!isset($inner['prefix']) || empty($inner['prefix']) || strlen(trim($inner['prefix']))==0) {
-		$error[] = 'No Prefix Specified for the Individual Font Identifier Hashinfo!';
-	}
-		
+			$images = cleanWhitespaces(file(__DIR__ . DIRECTORY_SEPARATOR . 'include'  . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'images-accepted.diz'));
+		    $pass = false;
+			foreach($images as $xtension)
+			{
+			    if (strtolower(substr($_FILES['logo']['name'], strlen($_FILES['logo']['name'])- strlen($xtension))) == strtolower($xtension))
+			        if (in_array($xtension, $images)) {
+			            $imagetype = $xtension;
+			            $pass = true;
+			            continue;
+			         }
+			}
+			if ($pass == false)
+			    $error[] = 'The file extension type of <strong>'.$_FILES['logo']['name'].'</strong> is not valid you can only upload the following file types: <em>'.implode("</em>&nbsp;<em>*.", $images).'</em>!';
+        }
+    }
+	
 	if (isset($inner['email']) || !empty($inner['email'])) {
 		if (!checkEmail($inner['email']))
-			$error[] = 'Email is invalid!';
+			$error[] = 'Converter\'s organisation Email Address is invalid!';
 	} else
-		$error[] = 'No Email Address for Notification specified!';
+		$error[] = 'No Converter\'s organisation Email Address for Notification specified!';
 	
-	if (((!isset($inner['name']) || empty($inner['name'])) || (!isset($inner['bizo']) || empty($inner['bizo']))) && 
-		(isset($inner['scope']['to']) && $inner['scope']['to'] = 'to')) {
-		$error[] = 'No Converters Individual name or organisation not specified in survey scope when selected!';
+	if (!isset($inner['name']) || empty($inner['name'])) {
+		$error[] = 'No Converter\'s individual or organisation name not specified in survey scope when selected!';
 	}
 	
-	if ((!isset($inner['email-cc']) || empty($inner['email-cc'])) && (isset($inner['scope']['cc']) && $inner['scope']['cc'] = 'cc')) {
-		$error[] = 'No Survey addressee To by survey cc participants email\'s specified when survey scope is selected!';
+	if (!isset($inner['url']) || empty($inner['url'])) {
+	    $error[] = 'No Converter\'s organisation URL not specified in survey scope when selected!';
 	}
 	
-	if ((!isset($inner['email-bcc']) || empty($inner['email-bcc'])) && (isset($inner['scope']['bcc']) && $inner['scope']['bcc'] = 'bcc')) {
-		$error[] = 'No Survey addressee To by survey bcc participants email\'s specified when survey scope is selected!';
-	}
-	
-	$uploadpath = DIRECTORY_SEPARATOR . $inner['email'] . DIRECTORY_SEPARATOR . microtime(true);
-	if (!is_dir(constant("FONT_UPLOAD_PATH") . $uploadpath)) {
-		if (!mkdir(constant("FONT_UPLOAD_PATH") . $uploadpath, 0777, true)) {
-			$error[] = 'Unable to make path: '.constant("FONT_UPLOAD_PATH") . $uploadpath;
+	$uploadpath = constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . ($key = md5($inner['email'] . DIRECTORY_SEPARATOR . microtime(true)));
+	if (!is_dir($uploadpath)) {
+		if (!mkdir($uploadpath, 0777, true)) {
+			$error[] = 'Unable to make path: '.$uploadpath;
 		}
 	}
 	
-	if (!is_dir(constant("FONT_RESOURCES_UNPACKING") . $uploadpath)) {
-		if (!mkdir(constant("FONT_RESOURCES_UNPACKING") . $uploadpath, 0777, true)) {
-			$error[] = 'Unable to make path: '.constant("FONT_RESOURCES_UNPACKING") . $uploadpath;	
-		}
+	$oe4path = constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . ($key . '.oe4');
+	if (!is_dir($oe4path)) {
+	    if (!mkdir($oe4path, 0777, true)) {
+	        $error[] = 'Unable to make path: ' . $oe4path;
+	    }
 	}
 	//echo "Checked for Errors Fine<br/>";
 	if (!empty($error))
@@ -144,55 +106,243 @@
 		redirect(isset($inner['return'])&&!empty($inner['return'])?$inner['return']:'http://'. $_SERVER["HTTP_HOST"], 9, "<center><h1 style='color:rgb(198,0,0);'>Error Has Occured</h1><br/><p>" . implode("<br />", $error) . "</p></center>");
 		exit(0);
 	}
-	$uploader = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . "include" . DIRECTORY_SEPARATOR . "data". DIRECTORY_SEPARATOR . "uploads.json"), true);
-	//echo "Loaded Upload Data Fine<br/>";
-	$file = array();
-	$uploader[$ipid][$time]['type'] = $filetype;
-	switch ($filetype)
-	{
-		case "font":
-			if (!move_uploaded_file($_FILES[$inner['field']]['tmp_name'], $file[] = constant("FONT_UPLOAD_PATH") . $uploadpath . DIRECTORY_SEPARATOR . ($uploader[$ipid][$time]['file'] = $_FILES[$inner['field']]['name']))) {
-				redirect(isset($inner['return'])&&!empty($inner['return'])?$inner['return']:'http://'. $_SERVER["HTTP_HOST"], 9, "<center><h1 style='color:rgb(198,0,0);'>Uploading Error Has Occured</h1><br/><p>Fonts API was unable to recieve and store: <strong>".$_FILES[$inner['field']]['name']."</strong>!</p></center>");
-				exit(0);
-			} else 
-				$success = array($_FILES[$inner['field']]['name'] => $_FILES[$inner['field']]['name']);
-			break;
-		case "pack":
-			if (!move_uploaded_file($_FILES[$inner['field']]['tmp_name'], $file[] = constant("FONT_UPLOAD_PATH") . $uploadpath . DIRECTORY_SEPARATOR . ($uploader[$ipid][$time]['pack'] = $_FILES[$inner['field']]['name']))) {
-				redirect(isset($inner['return'])&&!empty($inner['return'])?$inner['return']:'http://'. $_SERVER["HTTP_HOST"], 9, "<center><h1 style='color:rgb(198,0,0);'>Uploading Error Has Occured</h1><br/><p>Fonts API was unable to recieve and store: <strong>".$_FILES[$inner['field']]['name']."</strong>!</p></center>");
-				exit(0);
-			} else 
-				$success = array($_FILES[$inner['field']]['name'] => $_FILES[$inner['field']]['name']);
-			$uploader[$ipid][$time]['packtype'] = $packtype;
-			break;
-		default:
-			$error[] = 'The file extension type of <strong>*.'.$fileext.'</strong> is not valid you can only upload the following: <em>*.otf</em>, <em>*.ttf</em> & <em>*.zip</em>!';
-			break;
-	}
-	if (file_exists($file[0])){
-	    rename($file[0], $file[0] = constant("FONT_RESOURCES_UNPACKING") . $uploadpath . DIRECTORY_SEPARATOR . basename($file[0]));
-	}
-	//echo "Uploaded Fine<br/>";
+	
+	$file = $uploader = $success = array();
+	
+	if (!move_uploaded_file($_FILES[$inner['field']]['tmp_name'], $file['font'] = $uploadpath . DIRECTORY_SEPARATOR . ($uploader['font'] = $_FILES[$inner['field']]['name']))) {
+		redirect(isset($inner['return'])&&!empty($inner['return'])?$inner['return']:'http://'. $_SERVER["HTTP_HOST"], 9, "<center><h1 style='color:rgb(198,0,0);'>Uploading Error Has Occured</h1><br/><p>Fonts API was unable to recieve and store: <strong>".$_FILES[$inner['field']]['name']."</strong>!</p></center>");
+		exit(0);
+	} else 
+	    $success['font'] = array('unixtime' => time(), 'file' => $_FILES[$inner['field']]['name'], 'mime-type' => $_FILES[$inner['field']]['media_type']);
+	
+    if (!move_uploaded_file($_FILES['logo']['tmp_name'], $file['logo'] = $uploadpath . DIRECTORY_SEPARATOR . ($uploader['logo'] = $_FILES['logo']['name']))) {
+	    redirect(isset($inner['return'])&&!empty($inner['return'])?$inner['return']:'http://'. $_SERVER["HTTP_HOST"], 9, "<center><h1 style='color:rgb(198,0,0);'>Uploading Error Has Occured</h1><br/><p>Fonts API was unable to recieve and store: <strong>".$_FILES[$inner['field']]['name']."</strong>!</p></center>");
+	    exit(0);
+	} else
+	    $success['logo'] = array('unixtime' => time(), 'file' => $_FILES['logo']['name'], 'mime-type' => $_FILES['logo']['media_type']);
+	    
 	if (!empty($error))
 	{
 		redirect(isset($inner['return'])&&!empty($inner['return'])?$inner['return']:'http://'. $_SERVER["HTTP_HOST"], 9, "<center><h1 style='color:rgb(198,0,0);'>Error Has Occured</h1><br/><p>" . implode("<br />", $error) . "</p></center>");
 		exit(0);
 	}
-	mkdir(__DIR__  . DIRECTORY_SEPARATOR . "lost", 0777, true);
-	foreach( get7zListAsArray($path = __DIR__ . DIRECTORY_SEPARATOR . 'lost') as $lost)
-	{
-		if (md5_file($file) == md5_file($path . DIRECTORY_SEPARATOR . $lost))
-			unlink($path . DIRECTORY_SEPARATOR . $lost);
-	}
-	//echo "Lost Fine<br/>";
-	$GLOBALS["APIDB"]->queryF("UPDATE `" . $GLOBALS['APIDB']->prefix('networking') . "` SET `uploads` = `uploads` + 1 WHERE `ip_id` = '".$ipid."'");
-	$uploader[$ipid][$time]['files'][] = $file;
-	$uploader[$ipid][$time]['form'] = $inner;
-	$uploader[$ipid][$time]['path'] = $uploadpath;
-	mkdirSecure(__DIR__  . DIRECTORY_SEPARATOR . "include"  . DIRECTORY_SEPARATOR . "data", 0777, true);
-	file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "include"  . DIRECTORY_SEPARATOR . "data". DIRECTORY_SEPARATOR . "uploads.json", json_encode($uploader));
-	//echo "Made Record of Upload - Ok!<br/>";
-	redirect(isset($inner['return'])&&!empty($inner['return'])?$inner['return']:'http://'. $_SERVER["HTTP_HOST"], 18, "<center><h1 style='color:rgb(0,198,0);'>Uploading Partially or Completely Successful</h1><br/><div>The following files where uploaded and queued for conversion on the API Successfully:</div><div style='height: auto; clear: both; width: 100%;'><ul style='height: auto; clear: both; width: 100%;'><li style='width: 24%; float: left;'>".implode("</li><li style='width: 24%; float: left;'>", $success)."</li></ul></div><br/><div style='clear: both; height: 11px; width: 100%'>&nbsp;</div><p>You need to wait for the conversion maintenance to run in the next 30 minutes, you will recieve an email when done per each file!</p></center>");
+	
+	@exec("cd " . $uploadpath, $out, $return);
+	@exec($exe = sprintf(OE4_FONTFORGE . " -script \"%s\" \"%s\"", __DIR__  . DIRECTORY_SEPARATOR . "include"  . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "convert-fonts-ufo.pe", $file['font']), $out, $return);
+	echo "Executed: $exe<br />";
+	echo "--output--" . implode("<br />", $out)."<br /><br />";
+	$parts = explode('.', basename($file['font']));
+	unset($parts[count($parts)-1]);
+	$fill = implode('.', $parts);
+	
+	$fontdata = array();
+	if (file_exists($fontinfo = $uploadpath . DIRECTORY_SEPARATOR . $fill . '.ufo' . DIRECTORY_SEPARATOR . 'fontinfo.plist')) {
+	   //$fontdata = xml2array(file_get_contents($fontinfo), true, 'key');
+	    $fontvalues = xml2array($xml = file_get_contents($fontinfo));
+	    $fontdata['EO4']['basename'] = $fill;
+	    $fontdata['EO4']['name'] = $inner['name'];
+	    $fontdata['EO4']['email'] = $inner['email'];
+	    $fontdata['EO4']['url'] = $inner['url'];
+	    foreach($fontvalues['plist']['dict']['key'] as $id => $fieldkey)
+	    {
+	        if ($ipos = strpos($xml, $needle = "    <key>$fieldkey</key>\n    "))
+	        {
+	            if ($epos = strpos($xml, $eneedle = "\n", $ipos + strlen($needle) + 1))
+	            {
+	                $scrape = substr($xml, $ipos + strlen($needle), ($epos - ($ipos + strlen($needle) + 1) + 1));
+	                if (strpos($scrape, 'string'))
+	                    $fontdata[formatElement($fieldkey)] = str_replace(array("<string>", "</string>"), '', $scrape);
+                    elseif (strpos($scrape, 'integer'))
+	                    $fontdata[formatElement($fieldkey)] = str_replace(array("<integer>", "</integer>"), '', $scrape);
+                    elseif (strpos($scrape, 'real'))
+	                    $fontdata[formatElement($fieldkey)] = str_replace(array("<real>", "</real>"), '', $scrape);
+                    elseif (strpos($scrape, 'true'))
+	                    $fontdata[formatElement($fieldkey)] = true;
+                    elseif (strpos($scrape, 'false'))
+	                    $fontdata[formatElement($fieldkey)] = false;
+                    elseif (strpos($scrape, 'array/'))
+	                    $fontdata[formatElement($fieldkey)] = array();
+                    elseif (strpos($scrape, 'array')) {
+                        if ($apos = strpos($xml, $aneedle = "\n    </array>\n", $epos + strlen($scrape) + 1))
+                        {
+                            $arrayxml = substr($xml, $epos + strlen($scrape), $apos - ($epos + strlen($scrape)));
+                            $arrayxml = str_replace(array('\t', '        ', '    ', '<string>', '</string>', '<integer>', '</integer>', '<real>', '</real>'), '', $arrayxml);
+                            foreach(explode("\n", $arrayxml) as $valuexml)
+                                $fontdata[formatElement($fieldkey)][] = trim($valuexml);
+                        }
+	                }
+	                switch(formatElement($fieldkey))
+	                {
+	                    case 'Family-Name':
+	                    case 'Style-Name':
+	                    case 'Style-Map-Family-Name':
+	                    case 'Style-Map-Style-Name':
+	                    case 'Postscript-Font-Name':
+	                    case 'Postscript-Full-Name':
+	                        $fontdata[formatElement($fieldkey)] = trim(formatName($fontdata[formatElement($fieldkey)]));
+	                        break;
+	                }
+	                if (formatElement($fieldkey) == 'Cap-Height') {
+	                    $fontdata['Cap-Depth'] = false;
+	                    $fontdata['Cap-Scale'] = '0.0';
+	                }
+	                if (formatElement($fieldkey) == 'X-Height') {
+	                    $fontdata['Z-Depth'] = false;
+	                }
+	                if (formatElement($fieldkey) == 'Descender') {
+	                    $fontdata['Depther'] = false;
+	                    $fontdata['Scaler'] = '1.0';
+	                }
+	                if (formatElement($fieldkey) == 'Open-Type-Hhea-Descender') {
+	                    $fontdata['Open-Type-Hhea-Depther'] = false;
+	                    $fontdata['Open-Type-Hhea-Scaler'] = '0.0';
+	                }
+	                if (formatElement($fieldkey) == 'Open-Type-OS2-Typo-Descender') {
+	                    $fontdata['Open-Type-OS2-Typo-Depther'] = false;
+	                    $fontdata['Open-Type-OS2-Typo-Scaler'] = '0.0';
+	                }
+	                if (formatElement($fieldkey) == 'Open-Type-OS2-Win-Descent') {
+	                    $fontdata['Open-Type-OS2-Win-Depth'] = false;
+	                    $fontdata['Open-Type-OS2-Win-Scale'] = '0.0';
+	                }
+	                if (formatElement($fieldkey) == 'Open-Type-OS2-Subscript-Y-Size') {
+	                    $fontdata['Open-Type-OS2-Subscript-Z-Size'] = false;
+	                    $fontdata['Open-Type-OS2-Subscript-D-Size'] = false;
+	                }
+	                if (formatElement($fieldkey) == 'Open-Type-OS2-Subscript-Y-Offset') {
+	                    $fontdata['Open-Type-OS2-Subscript-Z-Offset'] = false;
+	                    $fontdata['Open-Type-OS2-Subscript-D-Offset'] = false;
+	                }
+	                if (formatElement($fieldkey) == 'Open-Type-OS2-Superscript-Y-Size') {
+	                    $fontdata['Open-Type-OS2-Superscript-Z-Size'] = false;
+	                    $fontdata['Open-Type-OS2-Superscript-D-Size'] = false;
+	                }
+	                if (formatElement($fieldkey) == 'Open-Type-OS2-Superscript-Y-Offset') {
+	                    $fontdata['Open-Type-OS2-Superscript-Z-Offset'] = false;
+	                    $fontdata['Open-Type-OS2-Superscript-D-Offset'] = false;
+	                }
+	                if (formatElement($fieldkey) == 'Postscript-Stem-Snap-V') {
+	                    $fontdata['Postscript-Stem-Snap-D'] = array();
+	                }
+	                
+	            }
+	        }
+	    }
+	    
+	    if (!is_dir($glyphpath = $oe4path . DIRECTORY_SEPARATOR . 'glyphs'))
+	        if (!mkdir($glyphpath, 0777, true)) {
+	            $error[] = 'Unable to make path: ' . $glyphpath;
+	        }
+	    $characters = array();
+	    foreach(getFileListAsArray($glyphsrc = $uploadpath . DIRECTORY_SEPARATOR . $fill . '.ufo' . DIRECTORY_SEPARATOR . 'glyphs') as $glyphfile)
+	    {
+	        $glyph = array();
+	        $glyphvalues = json_decode(json_encode(new SimpleXMLElement($xml = file_get_contents($glyphsrc . DIRECTORY_SEPARATOR . $glyphfile))), true);
+	        foreach($glyphvalues as $gkey => $gvalues)
+	        {
+	            switch ($gkey)
+	            {
+	                case '@attributes':
+	                    foreach($gvalues as $fkey => $fvalue)
+	                    {
+	                        $glyph[formatElement($fkey)] = $fvalue;
+	                    }
+	                    break;
+	                case 'advance':
+	                    foreach($gvalues['@attributes'] as $fkey => $fvalue)
+	                    {
+	                        $glyph['advance'][formatElement($fkey)] = $fvalue;
+	                        if (formatElement($fkey)=='Hex')
+	                            $characters[$hex = $fvalue] = $hex;
+	                    }
+	                    unset($gvalues['@attributes']);
+	                    foreach($gvalues as $fkey => $fvalue)
+	                    {
+	                        $glyph['advance'][formatElement($fkey)] = $fvalue;
+	                    }
+	                    $glyph['advance'][formatElement('depth')] = false;
+	                    break;
+	                case 'unicode':
+	                    foreach($gvalues['@attributes'] as $fkey => $fvalue)
+	                    {
+	                        $glyph['unicode'][formatElement($fkey)] = $fvalue;
+	                    }
+	                    unset($gvalues['@attributes']);
+	                    foreach($gvalues as $fkey => $fvalue)
+	                    {
+	                        $glyph['unicode'][formatElement($fkey)] = $fvalue;
+	                    }
+	                    break;
+	                case 'outline':
+	                    foreach($gvalues['contour'] as $ckey => $cvalue)
+	                    {
+	                        foreach($cvalue['point'] as $pkey => $pvalue)
+	                        {
+	                            foreach($pvalue['@attributes'] as $fkey => $fvalue)
+	                            {
+	                                $glyph['contour'][$ckey]['point'][$pkey][formatElement($fkey)] = $fvalue;
+	                                if (formatElement($fkey) == 'Y') {
+	                                    $glyph['contour'][$ckey]['point'][$pkey]['Z'] = false;
+	                                    $glyph['contour'][$ckey]['point'][$pkey]['D'] = false;
+	                                }
+	                            }
+	                            unset($pvalue['@attributes']);
+	                            foreach($pvalue as $fkey => $fvalue)
+	                            {
+	                                $glyph['contour'][$ckey]['point'][$pkey][formatElement($fkey)] = $fvalue;
+	                            }
+	                        }
+	                    }
+	                    break;
+	                case 'lib':
+	                    foreach($gvalues['dict'] as $ckey => $cvalue)
+	                    {
+	                        switch($ckey)
+	                        {
+	                            case "key":
+	                                $glyph['library'][formatElement($ckey)] = $cvalue;
+	                                break;
+	                            case "dict":
+	                                foreach($cvalue['dict'] as $pkey => $pvalue)
+	                                {
+	                                    switch($ckey)
+	                                    {
+	                                        case "key":
+	                                            $glyph['library']['dictionary'][formatElement($ckey)][formatElement($pkey)] = $pvalue;
+	                                            $glyph['library']['dictionary'][formatElement($ckey)][formatElement($pkey)][] = 'dhints'; 
+	                                            break;
+	                                        case "array":                                     
+        	                                    foreach($pvalue['array'] as $fkey => $fvalue)
+        	                                    {
+        	                                        foreach($fvalue['dict'] as $dkey => $dvalue)
+        	                                        {
+        	                                            $dvalue['key'][] = 'depth';
+        	                                            $dvalue['key'][] = 'scale';
+        	                                            $dvalue['integer'][] = '0';
+        	                                            $dvalue['integer'][] = '0.0';
+        	                                            $glyph['library']['dictionary'][formatElement($ckey)][formatElement($pkey)][formatElement($fkey)]['dictionary'][formatElement($dkey)] = $dvalue;
+        	                                        }
+        	                                    }
+        	                                    
+        	                             }
+	                                 }
+	                              
+	                        }
+	                        
+	                    }
+	                    writeRawFile($glyphpath . DIRECTORY_SEPARATOR . $hex . '.json', json_encode($glyph));
+	                    
+	                    break;
+	            }
+	        }
+	    }
+	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'success.json', json_encode($success));
+	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'glyphs.json', json_encode($characters));
+	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'fontinfo.json', json_encode($fontdata));
+	} else 
+	    die("File Not Found: $fontinfo");
+	
+	redirect(isset($inner['return'])&&!empty($inner['return'])?$inner['return']:OE4_URL . '/convert.php?key='.$key, 18, "<center><h1 style='color:rgb(0,198,0);'>Uploading Partially or Completely Successful</h1><br/><div>The following files where uploaded and queued for conversion on the API Successfully:</div><div style='height: auto; clear: both; width: 100%;'><ul style='height: auto; clear: both; width: 100%;'><li style='width: 24%; float: left;'>".implode("</li><li style='width: 24%; float: left;'>", $uploader)."</li></ul></div><br/><div style='clear: both; height: 11px; width: 100%'>&nbsp;</div><p>You will now have to select the conversion options, like licenses, character sets and so on, as well as preview text!</p></center>");
 	exit(0);
 	
 ?>

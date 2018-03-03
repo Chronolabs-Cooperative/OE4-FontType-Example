@@ -32,7 +32,7 @@ if (defined('OE4_NOHTML'))
     return false;
 ?>
 	<h2>Code PHP Documentation</h2>
-    <p>You can find the phpDocumentor code API documentation at the following path :: <a href="<?php echo API_URL; ?>/docs/" target="_blank"><?php echo API_URL; ?>/docs/</a>. These should outline the source code core functions and classes for the OE4 Converter to function!</p>
+    <p>You can find the phpDocumentor code API documentation at the following path :: <a href="<?php echo OE4_URL; ?>/docs/" target="_blank"><?php echo OE4_URL; ?>/docs/</a>. These should outline the source code core functions and classes for the OE4 Converter to function!</p>
 </div>
 </body>
 </html>

@@ -28,17 +28,20 @@
 
     // Converter Defaults
     define('OE4_FONTFORGE', '/usr/bin/fontforge');
-    define('OE4_TMP', '/tmp');
+    define('OE4_TMP', dirname(__DIR__) . '/data');
     define('OE4_CHARSETS', __DIR__ . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'charactersets.csv');
     define('OE4_CONVERTPE', __DIR__ . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'convert-fonts-ufo.pe');
     define('OE4_EVAL_COMPRESS', 'return gzcompress(%s, 9);');
     
     // Converted Field Seperators
     define('OE4_SEPARATOR', '||');
+    define('OE4_FIELDING', '%s::%s');
     define('OE4_SECTION_START', '|'.NULL.'|'.NULL.'|');
     define('OE4_SECTION_END', NULL.'|||'.NULL);
     define('OE4_LENGTH_START', '=|=');
     define('OE4_LENGTH_END', '='.NULL.'=');
+    define('OE4_CHAR_START', '|:%s:|');
+    define('OE4_CHAR_END', '|'.NULL.NULL.'|');
     
     
 ?>

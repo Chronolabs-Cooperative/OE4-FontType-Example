@@ -26,6 +26,85 @@
  */
 
 
+if (!function_exists('image2ascii'))
+{
+    /**
+     * Creates ASCII Art from Image
+     *
+     * @param string $file
+     * @param integer $asciiwidth
+     * 
+     * return string
+     * 
+     */
+    function image2ascii($file, $asciiwidth =  100)
+    {
+        $ascii = '';
+        $img = imagecreatefromstring(file_get_contents($file));
+        list($width, $height) = getimagesize($file);
+        if ($width >= $asciiwidth)
+            $scale = floor($width / $asciiwidth);
+        else 
+            $scale = ($width / $asciiwidth * $width);
+        $chars = array_reverse(array(' ','\'','.',':','|','H','%','@','#'));
+        $c_count = count($chars);
+        for($y = 0; $y <= $height - $scale - 1; $y += $scale) {
+            for($x = 0; $x <= $width - ($scale / 2) - 1; $x += ($scale / 2)) {
+                $rgb = imagecolorat($img, $x, $y);
+                $r = (($rgb >> 16) & 0xFF);
+                $g = (($rgb >> 8) & 0xFF);
+                $b = ($rgb & 0xFF);
+                $sat = ($r + $g + $b) / (255 * 3);
+                $ascii .= $chars[ (int)( $sat * ($c_count - 1) ) ];
+            }
+            $ascii .= PHP_EOL;
+        }
+        return $ascii;
+    }
+}
+
+
+if (!function_exists("checkEmail")) {
+    /**
+     * checkEmail()
+     *
+     * @param mixed $email
+     * @param mixed $antispam
+     * @return bool|mixed
+     */
+    function checkEmail($email, $antispam = false)
+    {
+        if (!$email || !preg_match('/^[^@]{1,64}@[^@]{1,255}$/', $email)) {
+            return false;
+        }
+        $email_array      = explode('@', $email);
+        $local_array      = explode('.', $email_array[0]);
+        $local_arrayCount = count($local_array);
+        for ($i = 0; $i < $local_arrayCount; ++$i) {
+            if (!preg_match("/^(([A-Za-z0-9!#$%&'*+\/\=?^_`{|}~-][A-Za-z0-9!#$%&'*+\/\=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$/", $local_array[$i])) {
+                return false;
+            }
+        }
+        if (!preg_match("/^\[?[0-9\.]+\]?$/", $email_array[1])) {
+            $domain_array = explode('.', $email_array[1]);
+            if (count($domain_array) < 2) {
+                return false; // Not enough parts to domain
+            }
+            for ($i = 0; $i < count($domain_array); ++$i) {
+                if (!preg_match("/^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$/", $domain_array[$i])) {
+                    return false;
+                }
+            }
+        }
+        if ($antispam) {
+            $email = str_replace('@', ' at ', $email);
+            $email = str_replace('.', ' dot ', $email);
+        }
+        
+        return $email;
+    }
+}
+
 if (!function_exists("redirect")) {
     /**
      * Redirect HTML Display
@@ -40,7 +119,7 @@ if (!function_exists("redirect")) {
         $GLOBALS['url'] = $uri;
         $GLOBALS['time'] = $seconds;
         $GLOBALS['message'] = $message;
-        require_once API_ROOT_PATH . DIRECTORY_SEPARATOR . 'redirect.php';
+        require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'redirect.php';
         exit(-1000);
     }
 }
@@ -183,6 +262,77 @@ if (!function_exists("getFileListAsArray")) {
 
 		return $filelist;
 	}
+}
+
+if (!function_exists("getFontsListAsArray")) {
+    /**
+     * Get a font files listing for a single path no recursive
+     *
+     * @param string $dirname
+     * @param string $prefix
+     *
+     * @return array
+     */
+    function getFontsListAsArray($dirname, $prefix = '')
+    {
+        $formats = cleanWhitespaces(file(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'font-converted.diz'));
+        $filelist = array();
+        
+        if ($handle = opendir($dirname)) {
+            while (false !== ($file = readdir($handle))) {
+                foreach($formats as $format)
+                    if (substr(strtolower($file), strlen($file)-strlen(".".$format)) == strtolower(".".$format)) {
+                        $file = $prefix . $file;
+                        $filelist[$file] = array('file'=>$file, 'type'=>$format);
+                    }
+            }
+            closedir($handle);
+        }
+        return $filelist;
+    }
+}
+
+if (!function_exists('formatElement')) {
+    
+    function formatElement($element = '')
+    {
+        $result = '';
+        for($u=0;$u<strlen($element);$u++)
+        {
+            if ((substr($element, $u, 1) == strtoupper(substr($element, $u, 1))) && (substr($element, $u+1, 1) != strtoupper(substr($element, $u+1, 1))))
+                $result .= ' ';
+            elseif ((substr($element, $u, 1) == strtoupper(substr($element, $u, 1))) && (substr($element, $u-1, 1) != strtoupper(substr($element, $u-1, 1))))
+                $result .= ' ';
+            elseif (is_numeric(substr($element, $u, 1)) && is_string(substr($element, $u-1, 1)) && (substr($element, $u-1, 1) != strtoupper(substr($element, $u-1, 1))))
+                $result .= ' ';
+            $result .= substr($element, $u, 1);
+            if (is_numeric(substr($element, $u, 1)) && is_string(substr($element, $u+1, 1)) && (substr($element, $u+1, 1) != strtoupper(substr($element, $u+1, 1))))
+                $result .= ' ';
+        }
+        $result = ucwords($result);
+        return str_replace(' ', '-', $result);
+    }
+}
+
+if (!function_exists('formatName')) {
+    
+    function formatName($element = '')
+    {
+        $result = '';
+        for($u=0;$u<strlen($element);$u++)
+        {
+            if ((substr($element, $u, 1) == strtoupper(substr($element, $u, 1))) && (substr($element, $u+1, 1) != strtoupper(substr($element, $u+1, 1))))
+                $result .= ' ';
+            elseif ((substr($element, $u, 1) == strtoupper(substr($element, $u, 1))) && (substr($element, $u-1, 1) != strtoupper(substr($element, $u-1, 1))))
+                $result .= ' ';
+            elseif (is_numeric(substr($element, $u, 1)) && is_string(substr($element, $u-1, 1)) && (substr($element, $u-1, 1) != strtoupper(substr($element, $u-1, 1))))
+                $result .= ' ';
+            $result .= substr($element, $u, 1);
+            if (is_numeric(substr($element, $u, 1)) && is_string(substr($element, $u+1, 1)) && (substr($element, $u+1, 1) != strtoupper(substr($element, $u+1, 1))))
+                $result .= ' ';
+        }
+        return ucwords($result);
+    }
 }
 
 if (!function_exists("xml2array")) {
@@ -377,6 +527,44 @@ if (!function_exists("getHTMLForm")) {
                 $form[] = "\t\t\t\t\t ~~ <strong>Font File Formats Supported: <em style='color:rgb(15,70 43); font-weight: bold; font-size: 81.6502%;'>*." . str_replace("\n" , "", implode(" *.", array_unique($formats))) . "</em></strong>!<br/>";
                 $form[] = "\t\t\t\t</div>";
                 $form[] = "\t\t\t</td>";
+                $form[] = "\t\t</tr>";
+                $form[] = "\t\t<tr>";
+                $form[] = "\t\t\t<td colspan='3'>";
+                $form[] = "\t\t\t\t<label for='logo'>Converter's Logo:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font></label>";
+                $form[] = "\t\t\t\t<input type='file' name='logo' id='logo'><br/>";
+                $form[] = "\t\t\t\t<div style='margin-left:42px; font-size: 71.99%; margin-top: 7px; padding: 11px;'>";
+                $form[] = "\t\t\t\t\t ~~ <strong>Maximum Upload Size Is: <em style='color:rgb(255,100,123); font-weight: bold; font-size: 132.6502%;'>" . ini_get('upload_max_filesize') . "!!!</em></strong><br/>";
+                $formats = file(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'images-accepted.diz'); sort($formats);
+                $form[] = "\t\t\t\t\t ~~ <strong>Image Formats Supported: <em style='color:rgb(15,70 43); font-weight: bold; font-size: 81.6502%;'>*." . str_replace("\n" , "", implode(" *.", array_unique($formats))) . "</em></strong>!<br/>";
+                $form[] = "\t\t\t\t</div>";
+                $form[] = "\t\t\t</td>";
+                $form[] = "\t\t</tr>";
+                $form[] = "\t\t<tr>";
+                $form[] = "\t\t\t<td style='width: 320px;'>";
+                $form[] = "\t\t\t\t<label for='name'>Converter's Name:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font></label>";
+                $form[] = "\t\t\t</td>";
+                $form[] = "\t\t\t<td>";
+                $form[] = "\t\t\t\t<input type='textbox' name='name' id='name' maxlen='198' size='41' value='".OE4_COMPANY."' /><br/>";
+                $form[] = "\t\t\t</td>";
+                $form[] = "\t\t\t<td>&nbsp;</td>";
+                $form[] = "\t\t</tr>";
+                $form[] = "\t\t<tr>";
+                $form[] = "\t\t\t<td style='width: 320px;'>";
+                $form[] = "\t\t\t\t<label for='email'>Converter's eMail:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font></label>";
+                $form[] = "\t\t\t</td>";
+                $form[] = "\t\t\t<td>";
+                $form[] = "\t\t\t\t<input type='textbox' name='email' id='email' maxlen='198' size='41' value='".OE4_EMAIL."' /><br/>";
+                $form[] = "\t\t\t</td>";
+                $form[] = "\t\t\t<td>&nbsp;</td>";
+                $form[] = "\t\t</tr>";
+                $form[] = "\t\t<tr>";
+                $form[] = "\t\t\t<td style='width: 320px;'>";
+                $form[] = "\t\t\t\t<label for='url'>Converter's URL:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font></label>";
+                $form[] = "\t\t\t</td>";
+                $form[] = "\t\t\t<td>";
+                $form[] = "\t\t\t\t<input type='textbox' name='url' id='url' maxlen='198' size='41' value='".OE4_COMPANY_URL."' /><br/>";
+                $form[] = "\t\t\t</td>";
+                $form[] = "\t\t\t<td>&nbsp;</td>";
                 $form[] = "\t\t</tr>";
                 $form[] = "\t\t<tr>";
                 $form[] = "\t\t\t<td colspan='3' style='padding-left:64px;'>";

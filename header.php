@@ -27,6 +27,49 @@
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'mainfile.php';
 
+global $inner;
+
+/**
+ * URI Path Finding of API URL Source Locality
+ * @var unknown_type
+ */
+$odds = $inner = array();
+foreach($inner as $key => $values) {
+    if (!isset($inner[$key])) {
+        $inner[$key] = $values;
+    } elseif (!in_array(!is_array($values) ? $values : md5(json_encode($values, true)), array_keys($odds[$key]))) {
+        if (is_array($values)) {
+            $odds[$key][md5(json_encode($inner[$key] = $values, true))] = $values;
+        } else {
+            $odds[$key][$inner[$key] = $values] = "$values--$key";
+        }
+    }
+}
+
+foreach($_POST as $key => $values) {
+    if (!isset($inner[$key])) {
+        $inner[$key] = $values;
+    } elseif (!in_array(!is_array($values) ? $values : md5(json_encode($values, true)), array_keys($odds[$key]))) {
+        if (is_array($values)) {
+            $odds[$key][md5(json_encode($inner[$key] = $values, true))] = $values;
+        } else {
+            $odds[$key][$inner[$key] = $values] = "$values--$key";
+        }
+    }
+}
+
+foreach(parse_url('http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'].(strpos($_SERVER['REQUEST_URI'], '?')?'&':'?').$_SERVER['QUERY_STRING'], PHP_URL_QUERY) as $key => $values) {
+    if (!isset($inner[$key])) {
+        $inner[$key] = $values;
+    } elseif (!in_array(!is_array($values) ? $values : md5(json_encode($values, true)), array_keys($odds[$key]))) {
+        if (is_array($values)) {
+            $odds[$key][md5(json_encode($inner[$key] = $values, true))] = $values;
+        } else {
+            $odds[$key][$inner[$key] = $values] = "$values--$key";
+        }
+    }
+}
+
 // Exit if NOHTML set!
 if (defined('OE4_NOHTML'))
     return false;
