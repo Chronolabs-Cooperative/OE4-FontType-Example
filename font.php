@@ -24,28 +24,31 @@
  * @link            https://twitter.com/ChronolabsCoop
  *
  */
-
-
-    // Converter Defaults
-    define('OE4_FONTFORGE', '/usr/bin/fontforge');
-    define('OE4_TMP', dirname(__DIR__) . '/data');
-    define('OE4_CHARSETS', __DIR__ . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'charactersets.csv');
-    define('OE4_CONVERTPE', __DIR__ . DIRECTORY_SEPARATOR . 'include' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'convert-fonts-ufo.pe');
-    define('OE4_EVAL_COMPRESS', 'return gzcompress(%s, 9);');
     
-    // Converted Field Seperators
-    define('OE4_SEPARATOR', '||');
-    define('OE4_FIELDING', '%s::%s');
-    define('OE4_SECTION_START', '|'.NULL.'|'.NULL.'|');
-    define('OE4_SECTION_END', NULL.'|||'.NULL);
-    define('OE4_LENGTH_START', '=|=');
-    define('OE4_LENGTH_END', '='.NULL.'=');
-    define('OE4_CHAR_START', '|:%s:|');
-    define('OE4_CHAR_END', '|'.NULL.NULL.'|');
+    global $inner, $odds;
+    define('OE4_NOHTML', true);
+    require_once __DIR__ . DIRECTORY_SEPARATOR . 'header.php';
     
-    // Convert Chronologistics Defaults
-    define('OE4_DELETE_WHEN', (3600 * 2));
-    define('OE4_DELETE_WARNING', (27 * 60));
+    foreach(getFontsListAsArray(OE4_TMP . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . $inner['key']) as $file => $values)
+        if ($values['type'] == $inner['format']) {
+            $fontfile = $values['file'];
+            continue;
+        }
     
+    require_once __DIR__ . DIRECTORY_SEPARATOR . 'footer.php';
+    
+    if (file_exists($file = OE4_TMP . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . $inner['key'] . DIRECTORY_SEPARATOR . $fontfile)) {
+        // Send Headers
+        header('Content-Type: ' . mime_content_type($file));
+        header('Content-Disposition: attachment; filename="' . $fontfile . '"');
+        header('Content-Transfer-Encoding: binary');
+        header('Accept-Ranges: ' . filesize($file). ' bytes');
+        header('Cache-Control: private');
+        header('Pragma: private');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        die(file_get_contents($file));
+    }
+    die("File Font Format Not Found: " . $inner['format']);
+     
     
 ?>

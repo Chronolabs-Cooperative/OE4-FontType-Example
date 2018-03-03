@@ -26,6 +26,66 @@
  */
 
 
+if (!function_exists('deleteWhenNotice'))
+{
+    function deleteWhenNotice($unixtime = 0)
+    {
+        if ($unixtime < time() - OE4_DELETE_WARNING)
+        {
+            return "<br /><font style='color: rgb(197,0,0); font-size: 0.7563256em;'>Deleting: " . displaySeconds($unixtime + OE4_DELETE_WHEN - time()) . "</font>";
+        }
+    }
+}
+
+if (!function_exists('displaySeconds'))
+{
+    function displaySeconds($seconds = 0)
+    {
+        $result = '';
+        if ($seconds / (3600 * 24) > 1)
+        {
+            $days = $seconds / (3600 * 24);
+            $parts = explode('.', $days);
+            if ($parts[0]>1)
+                $result = $parts[0] . ' days';
+            else 
+                $result = $parts[0] . ' day';
+            $seconds = doubleval('0.'.$parts[1]) * (3600 * 24);
+        }
+        if ($seconds / 3600 > 1)
+        {
+            $days = $seconds / 3600;
+            $parts = explode('.', $days);
+            if ($parts[0]>1)
+                $result = (strlen($result)>0?' ':'') . $parts[0] . ' hrs';
+            else
+                $result = (strlen($result)>0?' ':'') . $parts[0] . ' hr';
+            $seconds = doubleval('0.'.$parts[1]) * (3600);
+        }
+        if ($seconds / (60*60) > 1)
+        {
+            $days = $seconds / (60*60);
+            $parts = explode('.', $days);
+            if ($parts[0]>1)
+                $result = (strlen($result)>0?' ':'') . $parts[0] . ' mins';
+            else
+                $result = (strlen($result)>0?' ':'') . $parts[0] . ' min';
+            $seconds = doubleval('0.'.$parts[1]) * (60*60);
+        }
+        if ($seconds / (60) > 1)
+        {
+            $days = $seconds / (60);
+            $parts = explode('.', $days);
+            if ($parts[0]>1)
+                $result = (strlen($result)>0?' ':'') . $parts[0] . ' secs';
+            else
+                $result = (strlen($result)>0?' ':'') . $parts[0] . ' sec';
+            $seconds = doubleval('0.'.$parts[1]) * (60);
+        }
+        return $result;
+    }
+}
+
 if (!function_exists('image2ascii'))
 {
     /**
@@ -37,15 +97,18 @@ if (!function_exists('image2ascii'))
      * return string
      * 
      */
-    function image2ascii($file, $asciiwidth =  100)
+    function image2ascii($file, $asciiwidth =  100, $scale = 10)
     {
         $ascii = '';
-        $img = imagecreatefromstring(file_get_contents($file));
-        list($width, $height) = getimagesize($file);
-        if ($width >= $asciiwidth)
-            $scale = floor($width / $asciiwidth);
-        else 
-            $scale = ($width / $asciiwidth * $width);
+        $tmp = imagecreatefromstring(file_get_contents($file));
+        $scl = imagescale($tmp, $asciiwidth * $scale);
+        unset($tmp);
+        if (is_file($file.'.png'))
+            unlink($file.'.png');
+        imagepng($scl, $file.'.png');
+        unset($scl);
+        $img = imagecreatefromstring(file_get_contents($file.'.png'));
+        list($width, $height) = getimagesize($file.'.png');
         $chars = array_reverse(array(' ','\'','.',':','|','H','%','@','#'));
         $c_count = count($chars);
         for($y = 0; $y <= $height - $scale - 1; $y += $scale) {

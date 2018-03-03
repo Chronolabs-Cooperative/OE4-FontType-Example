@@ -35,6 +35,24 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'header.php';
     <blockquote>
     	<?php echo getHTMLForm('uploads'); ?>
     </blockquote>
+    <h2>Converted Font History</h2>
+    <p>Use these linked list of previously uploaded fonts in the last 2 hours to regenerate any *.eo4 font file you have previously!</p>
+    <blockquote>
+    	<ul>
+    	<?php  $keys = json_decode(file_get_contents(constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . 'keys.json'), true);
+    	       foreach($keys as $md5 => $values) { 
+    	           if ($values['unixtime'] < time() - OE4_DELETE_WHEN)
+    	           {
+    	               unset($keys[$md5]);
+    	               shell_exec('rm -Rf "' . constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . $values['key'] . '"');
+    	               shell_exec('rm -Rf "' . constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . $values['key'] . '.eo4"');
+    	               file_put_contents(constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . 'keys.json', json_encode($keys));
+    	           } else {
+    	?>	<li class="<?php echo str_replace(' ', '', $values['name']); ?>" style="list-style-type: none; float: left; width: auto; margin: 7px; font-size: 0.9967368754387em;" id="<?php echo str_replace(' ', '', $values['name']); ?>" ><a class="<?php echo str_replace(' ', '', $values['name']); ?>" id="<?php echo str_replace(' ', '', $values['name']); ?>" href="<?php echo OE4_URL . '/convert.php?key=' . $values['key'];?>" target="_blank"><?php echo $values['name']; ?></a><?php echo deleteWhenNotice($values['unixtime']); ?></li>
+<?php  	       }} ?>
+		</ul>
+		<div style="clear: both;">&nbsp</div>
+    </blockquote>
 <?php 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'footer.php';
 ?>

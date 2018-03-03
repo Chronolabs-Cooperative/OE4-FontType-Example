@@ -27,14 +27,14 @@
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'mainfile.php';
 
-global $inner;
+global $inner, $odds;
 
 /**
  * URI Path Finding of API URL Source Locality
  * @var unknown_type
  */
 $odds = $inner = array();
-foreach($inner as $key => $values) {
+foreach($_GET as $key => $values) {
     if (!isset($inner[$key])) {
         $inner[$key] = $values;
     } elseif (!in_array(!is_array($values) ? $values : md5(json_encode($values, true)), array_keys($odds[$key]))) {
@@ -132,7 +132,12 @@ if (defined('OE4_NOHTML'))
 <link href="<?php echo OE4_URL; ?>/assets/media/Prestige Elite Normal/style.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="<?php echo OE4_URL; ?>/assets/css/gradients.php" type="text/css" />
 <link rel="stylesheet" href="<?php echo OE4_URL; ?>/assets/css/shadowing.php" type="text/css" />
-
+<!-- Queued Historical Fonts -->
+<?php 
+$keys = json_decode(file_get_contents(constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . 'keys.json'), true);
+foreach($keys as $md5 => $values) {
+?><link href="<?php echo OE4_URL; ?>/v1/css/<?php echo $values['key']; ?>.css" rel="stylesheet" type="text/css" /> <!-- Font Name: <?php echo $values['name']; ?> -->
+<?php } ?>
 </head>
 <body>
 <div class="main">

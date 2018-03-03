@@ -25,14 +25,13 @@
  *
  */
 
+    global $inner, $odds;
     define('OE4_NOHTML', true);
 	require_once __DIR__ . DIRECTORY_SEPARATOR . 'header.php';
     
-	error_reporting(E_ALL);
-	ini_set('display_errors', true);
+	error_reporting(0);
+	ini_set('display_errors', false);
 	set_time_limit(3600*36*9*14*28);
-	
-	global $inner;
 	
 	//echo "Processed Upload Form Fine<br/>";
 	$time = time();
@@ -107,6 +106,9 @@
 		exit(0);
 	}
 	
+	$keys = json_decode(file_get_contents(constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . 'keys.json'), true);
+	$keys[$keyskey = md5(microtime(true))]['key'] = $key;
+	
 	$file = $uploader = $success = array();
 	
 	if (!move_uploaded_file($_FILES[$inner['field']]['tmp_name'], $file['font'] = $uploadpath . DIRECTORY_SEPARATOR . ($uploader['font'] = $_FILES[$inner['field']]['name']))) {
@@ -129,8 +131,7 @@
 	
 	@exec("cd " . $uploadpath, $out, $return);
 	@exec($exe = sprintf(OE4_FONTFORGE . " -script \"%s\" \"%s\"", __DIR__  . DIRECTORY_SEPARATOR . "include"  . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "convert-fonts-ufo.pe", $file['font']), $out, $return);
-	echo "Executed: $exe<br />";
-	echo "--output--" . implode("<br />", $out)."<br /><br />";
+
 	$parts = explode('.', basename($file['font']));
 	unset($parts[count($parts)-1]);
 	$fill = implode('.', $parts);
@@ -143,6 +144,9 @@
 	    $fontdata['EO4']['name'] = $inner['name'];
 	    $fontdata['EO4']['email'] = $inner['email'];
 	    $fontdata['EO4']['url'] = $inner['url'];
+	    $fontdata['EO4']['logo-image']['mime-type'] = $success['mime-type'];
+	    $fontdata['EO4']['logo-image']['encoding'] = 'base64';
+	    $fontdata['EO4']['logo-image']['image'] = base64_encode(file_get_contents($file['logo']));
 	    foreach($fontvalues['plist']['dict']['key'] as $id => $fieldkey)
 	    {
 	        if ($ipos = strpos($xml, $needle = "    <key>$fieldkey</key>\n    "))
@@ -173,11 +177,15 @@
 	                }
 	                switch(formatElement($fieldkey))
 	                {
+	                    case 'Postscript-Font-Name':
+	                        $keys[$keyskey]['unixtime'] = time();
+	                        $keys[$keyskey]['name'] = trim(formatName($fontdata[formatElement($fieldkey)]));
+	                        writeRawFile(constant("OE4_TMP") . DIRECTORY_SEPARATOR . 'oe4' . DIRECTORY_SEPARATOR . 'keys.json', json_encode($keys));
+	                        
 	                    case 'Family-Name':
 	                    case 'Style-Name':
 	                    case 'Style-Map-Family-Name':
 	                    case 'Style-Map-Style-Name':
-	                    case 'Postscript-Font-Name':
 	                    case 'Postscript-Full-Name':
 	                        $fontdata[formatElement($fieldkey)] = trim(formatName($fontdata[formatElement($fieldkey)]));
 	                        break;
@@ -336,6 +344,7 @@
 	            }
 	        }
 	    }
+	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'files.json', json_encode($file));
 	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'success.json', json_encode($success));
 	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'glyphs.json', json_encode($characters));
 	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'fontinfo.json', json_encode($fontdata));
