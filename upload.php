@@ -137,7 +137,7 @@
 	}
 	
 	@exec("cd " . $uploadpath, $out, $return);
-	@exec($exe = sprintf(OE4_FONTFORGE . " -script \"%s\" \"%s\"", __DIR__  . DIRECTORY_SEPARATOR . "include"  . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "convert-fonts-ufo.pe", $file['font']), $out, $return);
+	@exec($exe = sprintf(OE4_FONTFORGE . " -script \"%s\" \"%s\"", OE4_CONVERT_PE, $file['font']), $out, $return);
 
 	$parts = explode('.', basename($file['font']));
 	unset($parts[count($parts)-1]);
