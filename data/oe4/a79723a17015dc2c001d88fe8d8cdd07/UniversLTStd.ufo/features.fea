@@ -1,0 +1,636 @@
+languagesystem DFLT dflt;
+languagesystem latn dflt;
+
+
+# GSUB 
+
+
+lookup aaltAccessAllAlternatesinLatinlookup0 {
+  lookupflag 0;
+    sub \period by \ellipsis ;
+    sub \one by \one.superior ;
+    sub \two by \two.superior ;
+    sub \three by \three.superior ;
+    sub \a by \a.superior ;
+    sub \o by \o.superior ;
+} aaltAccessAllAlternatesinLatinlookup0;
+
+lookup aaltAccessAllAlternatesinLatinlookup1 {
+  lookupflag 0;
+    sub \hyphen from [\endash \emdash \minus ];
+} aaltAccessAllAlternatesinLatinlookup1;
+
+lookup fracDiagonalFractionsinLatinlookup2 {
+  lookupflag 0;
+    sub \zero \uni2215 \zero  by \percent;
+    sub \zero \fraction \zero  by \percent;
+    sub \zero \slash \zero  by \percent;
+    sub \zero \uni2215 \zero \zero  by \perthousand;
+    sub \zero \fraction \zero \zero  by \perthousand;
+    sub \zero \slash \zero \zero  by \perthousand;
+    sub \one \uni2215 \two  by \onehalf;
+    sub \one \fraction \two  by \onehalf;
+    sub \one \slash \two  by \onehalf;
+    sub \one \uni2215 \four  by \onequarter;
+    sub \one \fraction \four  by \onequarter;
+    sub \one \slash \four  by \onequarter;
+    sub \three \uni2215 \four  by \threequarters;
+    sub \three \fraction \four  by \threequarters;
+    sub \three \slash \four  by \threequarters;
+} fracDiagonalFractionsinLatinlookup2;
+
+lookup ligaStandardLigaturesinLatinlookup3 {
+  lookupflag 0;
+    sub \f \i  by \f_i;
+    sub \f \l  by \f_l;
+} ligaStandardLigaturesinLatinlookup3;
+
+lookup ordnOrdinalsinLatinlookup4 {
+  lookupflag 0;
+    sub \a by \a.superior ;
+    sub \o by \o.superior ;
+} ordnOrdinalsinLatinlookup4;
+
+lookup supsSuperscriptinLatinlookup5 {
+  lookupflag 0;
+    sub \one by \one.superior ;
+    sub \two by \two.superior ;
+    sub \three by \three.superior ;
+    sub \a by \a.superior ;
+    sub \o by \o.superior ;
+} supsSuperscriptinLatinlookup5;
+
+feature aalt {
+
+ script DFLT;
+     language dflt ;
+      lookup aaltAccessAllAlternatesinLatinlookup0;
+      lookup aaltAccessAllAlternatesinLatinlookup1;
+
+ script latn;
+     language dflt ;
+      lookup aaltAccessAllAlternatesinLatinlookup0;
+      lookup aaltAccessAllAlternatesinLatinlookup1;
+} aalt;
+
+feature frac {
+
+ script DFLT;
+     language dflt ;
+      lookup fracDiagonalFractionsinLatinlookup2;
+
+ script latn;
+     language dflt ;
+      lookup fracDiagonalFractionsinLatinlookup2;
+} frac;
+
+feature liga {
+
+ script DFLT;
+     language dflt ;
+      lookup ligaStandardLigaturesinLatinlookup3;
+
+ script latn;
+     language dflt ;
+      lookup ligaStandardLigaturesinLatinlookup3;
+} liga;
+
+feature ordn {
+
+ script DFLT;
+     language dflt ;
+      lookup ordnOrdinalsinLatinlookup4;
+
+ script latn;
+     language dflt ;
+      lookup ordnOrdinalsinLatinlookup4;
+} ordn;
+
+feature sups {
+
+ script DFLT;
+     language dflt ;
+      lookup supsSuperscriptinLatinlookup5;
+
+ script latn;
+     language dflt ;
+      lookup supsSuperscriptinLatinlookup5;
+} sups;
+
+# GPOS 
+
+
+lookup kernHorizontalKerninginLatinlookup0 {
+  lookupflag 0;
+    pos \space \quotedblbase -50;
+    pos \space \quotedblleft -50;
+    pos \quoteright \period -125;
+    pos \quoteright \comma -125;
+    pos \quoteright \quoteright -90;
+    pos \comma \quotedblright -225;
+    pos \comma \quotedblleft -225;
+    pos \comma \quoteleft -125;
+    pos \comma \quoteright -125;
+    pos \period \quotedblright -225;
+    pos \period \quotedblleft -225;
+    pos \period \quoteleft -125;
+    pos \period \quoteright -125;
+    pos \zero \one -55;
+    pos \zero \zero 40;
+    pos \one \nine -60;
+    pos \one \eight -15;
+    pos \one \seven -15;
+    pos \one \six -15;
+    pos \one \five -15;
+    pos \one \four -35;
+    pos \one \three -15;
+    pos \one \two -15;
+    pos \one \one -135;
+    pos \one \zero -55;
+    pos \one \period -100;
+    pos \one \hyphen -40;
+    pos \seven \six -40;
+    pos \seven \four -55;
+    pos \seven \period -190;
+    pos \seven \hyphen -75;
+    pos \seven \comma -190;
+    pos \F \edieresis -15;
+    pos \F \atilde -15;
+    pos \F \agrave -15;
+    pos \F \adieresis -15;
+    pos \P \adieresis -15;
+    pos \T \udieresis -48;
+    pos \T \ograve -58;
+    pos \T \odieresis -58;
+    pos \T \egrave -86;
+    pos \T \edieresis -58;
+    pos \T \ecircumflex -86;
+    pos \T \atilde -58;
+    pos \T \aring -58;
+    pos \T \agrave -58;
+    pos \T \adieresis -29;
+    pos \T \acircumflex -58;
+    pos \V \odieresis -38;
+    pos \V \ocircumflex -56;
+    pos \V \igrave 0;
+    pos \V \icircumflex 5;
+    pos \V \iacute 0;
+    pos \V \egrave -38;
+    pos \V \edieresis -38;
+    pos \V \ecircumflex -38;
+    pos \V \atilde -38;
+    pos \V \aring -38;
+    pos \V \agrave -38;
+    pos \V \adieresis -38;
+    pos \V \acircumflex -38;
+    pos \V \i 0;
+    pos \W \udieresis -19;
+    pos \W \odieresis -41;
+    pos \W \ecircumflex -41;
+    pos \W \adieresis -41;
+    pos \Y \udieresis -41;
+    pos \Y \odieresis -71;
+    pos \quoteleft \quoteleft -90;
+    pos \quoteleft \period -125;
+    pos \quoteleft \comma -125;
+    pos \quotedblleft \period -400;
+    pos \quotedblleft \comma -400;
+    pos \guillemotleft \period -50;
+    pos \guillemotleft \comma -50;
+    pos \guilsinglright \period -25;
+    pos \guilsinglright \comma -25;
+    pos \quotedblright \period -400;
+    pos \quotedblright \comma -400;
+    pos \guillemotright \period -75;
+    pos \guillemotright \comma -75;
+  subtable;
+    @kc7_first_0 = [\A \Aacute \Acircumflex \Adieresis \Agrave \Aring \Atilde ];
+    @kc7_first_1 = [\B ];
+    @kc7_first_2 = [\c \ccedilla ];
+    @kc7_first_3 = [\D \Eth ];
+    @kc7_first_4 = [\e \oe \eacute \ecircumflex \edieresis \egrave ];
+    @kc7_first_5 = [\E \AE \Eacute \Ecircumflex \Edieresis \Egrave ];
+    @kc7_first_6 = [\f ];
+    @kc7_first_7 = [\F ];
+    @kc7_first_8 = [\g ];
+    @kc7_first_9 = [\h ];
+    @kc7_first_10 = [\i \fi \iacute \icircumflex \idieresis \igrave \f_i ];
+    @kc7_first_11 = [\J ];
+    @kc7_first_12 = [\k ];
+    @kc7_first_13 = [\K ];
+    @kc7_first_14 = [\L \Lslash ];
+    @kc7_first_15 = [\m ];
+    @kc7_first_16 = [\n \ntilde ];
+    @kc7_first_17 = [\N \Ntilde ];
+    @kc7_first_18 = [\o \oslash \oacute \ocircumflex \odieresis \ograve \otilde ];
+    @kc7_first_19 = [\O \Oslash \Oacute \Ocircumflex \Odieresis \Ograve \Otilde ];
+    @kc7_first_20 = [\P ];
+    @kc7_first_21 = [\Q ];
+    @kc7_first_22 = [\r ];
+    @kc7_first_23 = [\R ];
+    @kc7_first_24 = [\s \germandbls \scaron ];
+    @kc7_first_25 = [\S \Scaron ];
+    @kc7_first_26 = [\t ];
+    @kc7_first_27 = [\T ];
+    @kc7_first_28 = [\U \Uacute \Ucircumflex \Udieresis \Ugrave ];
+    @kc7_first_29 = [\v ];
+    @kc7_first_30 = [\V ];
+    @kc7_first_31 = [\w ];
+    @kc7_first_32 = [\W ];
+    @kc7_first_33 = [\x ];
+    @kc7_first_34 = [\X ];
+    @kc7_first_35 = [\y \yacute \ydieresis ];
+    @kc7_first_36 = [\Y \Yacute \Ydieresis ];
+    @kc7_first_37 = [\z \zcaron ];
+    @kc7_first_38 = [\guillemotleft ];
+    @kc7_first_39 = [\guillemotright ];
+    @kc7_first_40 = [\guilsinglleft ];
+    @kc7_first_41 = [\guilsinglright ];
+    @kc7_first_42 = [\quotedblbase ];
+    @kc7_first_43 = [\quotedblleft ];
+    @kc7_first_44 = [\quotedblright ];
+    @kc7_first_45 = [\quoteleft ];
+    @kc7_first_46 = [\quoteright ];
+    @kc7_first_47 = [\space ];
+    @kc7_second_1 = [\C \Ccedilla ];
+    @kc7_second_2 = [\G ];
+    @kc7_second_3 = [\O \Oslash \OE \Oacute \Ocircumflex \Odieresis \Ograve \Otilde ];
+    @kc7_second_4 = [\Q ];
+    @kc7_second_5 = [\S \Scaron ];
+    @kc7_second_6 = [\T ];
+    @kc7_second_7 = [\U \Uacute \Ucircumflex \Udieresis \Ugrave ];
+    @kc7_second_8 = [\v ];
+    @kc7_second_9 = [\V ];
+    @kc7_second_10 = [\w ];
+    @kc7_second_11 = [\W ];
+    @kc7_second_12 = [\y \yacute \ydieresis ];
+    @kc7_second_13 = [\Y \Yacute \Ydieresis ];
+    @kc7_second_14 = [\guillemotleft ];
+    @kc7_second_15 = [\guillemotright ];
+    @kc7_second_16 = [\guilsinglleft ];
+    @kc7_second_17 = [\quotedblleft ];
+    @kc7_second_18 = [\quotedblright ];
+    @kc7_second_19 = [\quoteleft ];
+    @kc7_second_20 = [\quoteright ];
+    @kc7_second_21 = [\h ];
+    @kc7_second_22 = [\k ];
+    @kc7_second_23 = [\A \AE \Aacute \Acircumflex \Adieresis \Agrave \Aring \Atilde ];
+    @kc7_second_24 = [\J ];
+    @kc7_second_25 = [\f \fi \fl \germandbls \f_i \f_l ];
+    @kc7_second_26 = [\t ];
+    @kc7_second_27 = [\comma ];
+    @kc7_second_28 = [\period ];
+    @kc7_second_29 = [\a \ae \aacute \acircumflex \adieresis \agrave \aring \atilde ];
+    @kc7_second_30 = [\e \eacute \ecircumflex \edieresis \egrave ];
+    @kc7_second_31 = [\o \oslash \oe \oacute \ocircumflex \odieresis \ograve \otilde ];
+    @kc7_second_32 = [\r ];
+    @kc7_second_33 = [\u \uacute \ucircumflex \udieresis \ugrave ];
+    @kc7_second_34 = [\hyphen ];
+    @kc7_second_35 = [\g ];
+    @kc7_second_36 = [\x ];
+    @kc7_second_37 = [\X ];
+    @kc7_second_38 = [\s \scaron ];
+    @kc7_second_39 = [\c \ccedilla ];
+    @kc7_second_40 = [\i \dotlessi \iacute \icircumflex \idieresis \igrave ];
+    @kc7_second_41 = [\colon ];
+    @kc7_second_42 = [\guilsinglright ];
+    @kc7_second_43 = [\semicolon ];
+    @kc7_second_44 = [\d ];
+    pos @kc7_first_0 @kc7_second_1 -20;
+    pos @kc7_first_0 @kc7_second_2 -20;
+    pos @kc7_first_0 @kc7_second_3 -20;
+    pos @kc7_first_0 @kc7_second_4 -20;
+    pos @kc7_first_0 @kc7_second_5 -20;
+    pos @kc7_first_0 @kc7_second_6 -75;
+    pos @kc7_first_0 @kc7_second_7 -20;
+    pos @kc7_first_0 @kc7_second_8 -40;
+    pos @kc7_first_0 @kc7_second_9 -55;
+    pos @kc7_first_0 @kc7_second_10 -40;
+    pos @kc7_first_0 @kc7_second_11 -40;
+    pos @kc7_first_0 @kc7_second_12 -20;
+    pos @kc7_first_0 @kc7_second_13 -115;
+    pos @kc7_first_0 @kc7_second_14 -75;
+    pos @kc7_first_0 @kc7_second_15 -50;
+    pos @kc7_first_0 @kc7_second_16 -50;
+    pos @kc7_first_0 @kc7_second_17 -150;
+    pos @kc7_first_0 @kc7_second_18 -150;
+    pos @kc7_first_0 @kc7_second_19 -100;
+    pos @kc7_first_0 @kc7_second_20 -100;
+    pos @kc7_first_1 @kc7_second_9 -20;
+    pos @kc7_first_1 @kc7_second_13 -20;
+    pos @kc7_first_2 @kc7_second_21 -50;
+    pos @kc7_first_2 @kc7_second_22 -50;
+    pos @kc7_first_3 @kc7_second_9 -20;
+    pos @kc7_first_3 @kc7_second_13 -55;
+    pos @kc7_first_3 @kc7_second_23 -20;
+    pos @kc7_first_3 @kc7_second_24 -25;
+    pos @kc7_first_4 @kc7_second_17 -25;
+    pos @kc7_first_4 @kc7_second_18 -25;
+    pos @kc7_first_4 @kc7_second_20 -25;
+    pos @kc7_first_5 @kc7_second_2 -40;
+    pos @kc7_first_5 @kc7_second_13 -40;
+    pos @kc7_first_6 @kc7_second_18 -25;
+    pos @kc7_first_6 @kc7_second_20 30;
+    pos @kc7_first_6 @kc7_second_25 -25;
+    pos @kc7_first_6 @kc7_second_26 -25;
+    pos @kc7_first_6 @kc7_second_27 -25;
+    pos @kc7_first_6 @kc7_second_28 -25;
+    pos @kc7_first_7 @kc7_second_23 -40;
+    pos @kc7_first_7 @kc7_second_24 -150;
+    pos @kc7_first_7 @kc7_second_27 -210;
+    pos @kc7_first_7 @kc7_second_28 -210;
+    pos @kc7_first_7 @kc7_second_29 -20;
+    pos @kc7_first_7 @kc7_second_30 -20;
+    pos @kc7_first_7 @kc7_second_31 -20;
+    pos @kc7_first_7 @kc7_second_32 -20;
+    pos @kc7_first_7 @kc7_second_33 -20;
+    pos @kc7_first_7 @kc7_second_34 -75;
+    pos @kc7_first_8 @kc7_second_29 -20;
+    pos @kc7_first_9 @kc7_second_12 -20;
+    pos @kc7_first_9 @kc7_second_20 -50;
+    pos @kc7_first_10 @kc7_second_8 20;
+    pos @kc7_first_11 @kc7_second_3 -20;
+    pos @kc7_first_11 @kc7_second_23 -40;
+    pos @kc7_first_11 @kc7_second_27 -25;
+    pos @kc7_first_11 @kc7_second_28 -25;
+    pos @kc7_first_11 @kc7_second_29 -20;
+    pos @kc7_first_11 @kc7_second_30 -20;
+    pos @kc7_first_11 @kc7_second_31 -20;
+    pos @kc7_first_11 @kc7_second_33 -20;
+    pos @kc7_first_12 @kc7_second_12 40;
+    pos @kc7_first_12 @kc7_second_29 20;
+    pos @kc7_first_12 @kc7_second_30 20;
+    pos @kc7_first_12 @kc7_second_35 20;
+    pos @kc7_first_13 @kc7_second_3 -20;
+    pos @kc7_first_13 @kc7_second_10 -40;
+    pos @kc7_first_13 @kc7_second_12 -40;
+    pos @kc7_first_13 @kc7_second_29 -10;
+    pos @kc7_first_13 @kc7_second_30 -20;
+    pos @kc7_first_13 @kc7_second_31 -20;
+    pos @kc7_first_13 @kc7_second_33 -20;
+    pos @kc7_first_14 @kc7_second_3 -50;
+    pos @kc7_first_14 @kc7_second_6 -95;
+    pos @kc7_first_14 @kc7_second_9 -120;
+    pos @kc7_first_14 @kc7_second_11 -95;
+    pos @kc7_first_14 @kc7_second_12 -75;
+    pos @kc7_first_14 @kc7_second_13 -135;
+    pos @kc7_first_14 @kc7_second_17 -300;
+    pos @kc7_first_14 @kc7_second_18 -300;
+    pos @kc7_first_14 @kc7_second_19 -200;
+    pos @kc7_first_14 @kc7_second_20 -200;
+    pos @kc7_first_14 @kc7_second_30 -10;
+    pos @kc7_first_14 @kc7_second_31 -10;
+    pos @kc7_first_14 @kc7_second_34 -175;
+    pos @kc7_first_15 @kc7_second_12 -20;
+    pos @kc7_first_16 @kc7_second_8 -20;
+    pos @kc7_first_16 @kc7_second_10 -20;
+    pos @kc7_first_16 @kc7_second_12 -20;
+    pos @kc7_first_16 @kc7_second_18 -20;
+    pos @kc7_first_16 @kc7_second_20 -20;
+    pos @kc7_first_17 @kc7_second_6 -25;
+    pos @kc7_first_18 @kc7_second_8 -15;
+    pos @kc7_first_18 @kc7_second_17 -25;
+    pos @kc7_first_18 @kc7_second_18 -25;
+    pos @kc7_first_18 @kc7_second_20 -25;
+    pos @kc7_first_18 @kc7_second_36 -15;
+    pos @kc7_first_19 @kc7_second_6 -40;
+    pos @kc7_first_19 @kc7_second_9 -40;
+    pos @kc7_first_19 @kc7_second_11 -40;
+    pos @kc7_first_19 @kc7_second_13 -55;
+    pos @kc7_first_19 @kc7_second_23 -50;
+    pos @kc7_first_19 @kc7_second_27 -25;
+    pos @kc7_first_19 @kc7_second_28 -25;
+    pos @kc7_first_19 @kc7_second_29 -20;
+    pos @kc7_first_19 @kc7_second_30 -10;
+    pos @kc7_first_19 @kc7_second_37 -40;
+    pos @kc7_first_20 @kc7_second_23 -95;
+    pos @kc7_first_20 @kc7_second_27 -210;
+    pos @kc7_first_20 @kc7_second_28 -210;
+    pos @kc7_first_20 @kc7_second_29 -30;
+    pos @kc7_first_20 @kc7_second_30 -30;
+    pos @kc7_first_20 @kc7_second_31 -30;
+    pos @kc7_first_20 @kc7_second_32 -20;
+    pos @kc7_first_20 @kc7_second_33 -20;
+    pos @kc7_first_20 @kc7_second_34 -120;
+    pos @kc7_first_21 @kc7_second_7 -20;
+    pos @kc7_first_22 @kc7_second_20 45;
+    pos @kc7_first_22 @kc7_second_26 -25;
+    pos @kc7_first_22 @kc7_second_27 -55;
+    pos @kc7_first_22 @kc7_second_28 -55;
+    pos @kc7_first_22 @kc7_second_32 -25;
+    pos @kc7_first_22 @kc7_second_34 -95;
+    pos @kc7_first_22 @kc7_second_38 20;
+    pos @kc7_first_23 @kc7_second_6 -30;
+    pos @kc7_first_23 @kc7_second_9 -30;
+    pos @kc7_first_23 @kc7_second_11 -30;
+    pos @kc7_first_23 @kc7_second_12 -20;
+    pos @kc7_first_23 @kc7_second_13 -40;
+    pos @kc7_first_23 @kc7_second_29 -20;
+    pos @kc7_first_23 @kc7_second_30 -20;
+    pos @kc7_first_23 @kc7_second_31 -20;
+    pos @kc7_first_23 @kc7_second_33 -20;
+    pos @kc7_first_24 @kc7_second_20 20;
+    pos @kc7_first_25 @kc7_second_6 -20;
+    pos @kc7_first_25 @kc7_second_8 -20;
+    pos @kc7_first_25 @kc7_second_9 -20;
+    pos @kc7_first_25 @kc7_second_10 -10;
+    pos @kc7_first_25 @kc7_second_12 -20;
+    pos @kc7_first_25 @kc7_second_13 -20;
+    pos @kc7_first_25 @kc7_second_23 -20;
+    pos @kc7_first_25 @kc7_second_29 -20;
+    pos @kc7_first_25 @kc7_second_30 -20;
+    pos @kc7_first_25 @kc7_second_31 -20;
+    pos @kc7_first_25 @kc7_second_39 -20;
+    pos @kc7_first_26 @kc7_second_26 -25;
+    pos @kc7_first_27 @kc7_second_3 -40;
+    pos @kc7_first_27 @kc7_second_10 -95;
+    pos @kc7_first_27 @kc7_second_12 -95;
+    pos @kc7_first_27 @kc7_second_14 -175;
+    pos @kc7_first_27 @kc7_second_15 -175;
+    pos @kc7_first_27 @kc7_second_16 -150;
+    pos @kc7_first_27 @kc7_second_23 -75;
+    pos @kc7_first_27 @kc7_second_24 -125;
+    pos @kc7_first_27 @kc7_second_27 -170;
+    pos @kc7_first_27 @kc7_second_28 -170;
+    pos @kc7_first_27 @kc7_second_29 -115;
+    pos @kc7_first_27 @kc7_second_30 -115;
+    pos @kc7_first_27 @kc7_second_31 -115;
+    pos @kc7_first_27 @kc7_second_32 -95;
+    pos @kc7_first_27 @kc7_second_33 -95;
+    pos @kc7_first_27 @kc7_second_34 -170;
+    pos @kc7_first_27 @kc7_second_40 20;
+    pos @kc7_first_27 @kc7_second_41 -135;
+    pos @kc7_first_27 @kc7_second_42 -125;
+    pos @kc7_first_27 @kc7_second_43 -135;
+    pos @kc7_first_28 @kc7_second_27 -25;
+    pos @kc7_first_28 @kc7_second_28 -25;
+    pos @kc7_first_29 @kc7_second_27 -60;
+    pos @kc7_first_29 @kc7_second_28 -60;
+    pos @kc7_first_29 @kc7_second_31 -15;
+    pos @kc7_first_29 @kc7_second_34 -25;
+    pos @kc7_first_30 @kc7_second_1 -20;
+    pos @kc7_first_30 @kc7_second_2 -40;
+    pos @kc7_first_30 @kc7_second_3 -40;
+    pos @kc7_first_30 @kc7_second_14 -100;
+    pos @kc7_first_30 @kc7_second_15 -100;
+    pos @kc7_first_30 @kc7_second_16 -100;
+    pos @kc7_first_30 @kc7_second_23 -55;
+    pos @kc7_first_30 @kc7_second_27 -95;
+    pos @kc7_first_30 @kc7_second_28 -95;
+    pos @kc7_first_30 @kc7_second_29 -75;
+    pos @kc7_first_30 @kc7_second_30 -75;
+    pos @kc7_first_30 @kc7_second_31 -75;
+    pos @kc7_first_30 @kc7_second_33 -55;
+    pos @kc7_first_30 @kc7_second_34 -95;
+    pos @kc7_first_30 @kc7_second_40 -25;
+    pos @kc7_first_30 @kc7_second_41 -75;
+    pos @kc7_first_30 @kc7_second_42 -75;
+    pos @kc7_first_30 @kc7_second_43 -75;
+    pos @kc7_first_31 @kc7_second_27 -20;
+    pos @kc7_first_31 @kc7_second_28 -20;
+    pos @kc7_first_31 @kc7_second_29 -20;
+    pos @kc7_first_31 @kc7_second_34 -25;
+    pos @kc7_first_32 @kc7_second_3 -40;
+    pos @kc7_first_32 @kc7_second_12 -25;
+    pos @kc7_first_32 @kc7_second_14 -75;
+    pos @kc7_first_32 @kc7_second_15 -75;
+    pos @kc7_first_32 @kc7_second_16 -75;
+    pos @kc7_first_32 @kc7_second_23 -40;
+    pos @kc7_first_32 @kc7_second_27 -55;
+    pos @kc7_first_32 @kc7_second_28 -55;
+    pos @kc7_first_32 @kc7_second_29 -55;
+    pos @kc7_first_32 @kc7_second_30 -55;
+    pos @kc7_first_32 @kc7_second_31 -55;
+    pos @kc7_first_32 @kc7_second_32 -25;
+    pos @kc7_first_32 @kc7_second_33 -25;
+    pos @kc7_first_32 @kc7_second_34 -40;
+    pos @kc7_first_32 @kc7_second_41 -40;
+    pos @kc7_first_32 @kc7_second_42 -50;
+    pos @kc7_first_32 @kc7_second_43 -40;
+    pos @kc7_first_33 @kc7_second_31 -15;
+    pos @kc7_first_33 @kc7_second_34 -50;
+    pos @kc7_first_34 @kc7_second_3 -20;
+    pos @kc7_first_35 @kc7_second_27 -55;
+    pos @kc7_first_35 @kc7_second_28 -55;
+    pos @kc7_first_35 @kc7_second_34 -25;
+    pos @kc7_first_36 @kc7_second_1 -40;
+    pos @kc7_first_36 @kc7_second_3 -40;
+    pos @kc7_first_36 @kc7_second_14 -150;
+    pos @kc7_first_36 @kc7_second_15 -125;
+    pos @kc7_first_36 @kc7_second_16 -100;
+    pos @kc7_first_36 @kc7_second_23 -115;
+    pos @kc7_first_36 @kc7_second_27 -160;
+    pos @kc7_first_36 @kc7_second_28 -160;
+    pos @kc7_first_36 @kc7_second_29 -95;
+    pos @kc7_first_36 @kc7_second_30 -95;
+    pos @kc7_first_36 @kc7_second_31 -95;
+    pos @kc7_first_36 @kc7_second_33 -55;
+    pos @kc7_first_36 @kc7_second_34 -165;
+    pos @kc7_first_36 @kc7_second_40 -35;
+    pos @kc7_first_36 @kc7_second_41 -90;
+    pos @kc7_first_36 @kc7_second_42 -75;
+    pos @kc7_first_36 @kc7_second_43 -90;
+    pos @kc7_first_37 @kc7_second_30 -20;
+    pos @kc7_first_37 @kc7_second_31 -20;
+    pos @kc7_first_38 @kc7_second_6 -200;
+    pos @kc7_first_38 @kc7_second_9 -100;
+    pos @kc7_first_38 @kc7_second_11 -75;
+    pos @kc7_first_38 @kc7_second_13 -150;
+    pos @kc7_first_38 @kc7_second_23 -50;
+    pos @kc7_first_39 @kc7_second_6 -200;
+    pos @kc7_first_39 @kc7_second_9 -100;
+    pos @kc7_first_39 @kc7_second_11 -75;
+    pos @kc7_first_39 @kc7_second_13 -175;
+    pos @kc7_first_39 @kc7_second_23 -75;
+    pos @kc7_first_40 @kc7_second_6 -150;
+    pos @kc7_first_40 @kc7_second_9 -75;
+    pos @kc7_first_40 @kc7_second_11 -50;
+    pos @kc7_first_40 @kc7_second_13 -100;
+    pos @kc7_first_41 @kc7_second_6 -175;
+    pos @kc7_first_41 @kc7_second_9 -100;
+    pos @kc7_first_41 @kc7_second_11 -75;
+    pos @kc7_first_41 @kc7_second_13 -150;
+    pos @kc7_first_41 @kc7_second_23 -50;
+    pos @kc7_first_42 @kc7_second_6 -225;
+    pos @kc7_first_42 @kc7_second_9 -200;
+    pos @kc7_first_42 @kc7_second_11 -150;
+    pos @kc7_first_42 @kc7_second_13 -250;
+    pos @kc7_first_43 @kc7_second_3 -50;
+    pos @kc7_first_43 @kc7_second_23 -155;
+    pos @kc7_first_43 @kc7_second_30 -90;
+    pos @kc7_first_43 @kc7_second_31 -90;
+    pos @kc7_first_44 @kc7_second_23 -175;
+    pos @kc7_first_44 @kc7_second_31 -90;
+    pos @kc7_first_45 @kc7_second_23 -125;
+    pos @kc7_first_45 @kc7_second_30 -75;
+    pos @kc7_first_45 @kc7_second_31 -75;
+    pos @kc7_first_46 @kc7_second_8 -60;
+    pos @kc7_first_46 @kc7_second_23 -145;
+    pos @kc7_first_46 @kc7_second_26 20;
+    pos @kc7_first_46 @kc7_second_32 -60;
+    pos @kc7_first_46 @kc7_second_38 -100;
+    pos @kc7_first_46 @kc7_second_44 -115;
+    pos @kc7_first_47 @kc7_second_6 -180;
+    pos @kc7_first_47 @kc7_second_9 -100;
+    pos @kc7_first_47 @kc7_second_11 -100;
+    pos @kc7_first_47 @kc7_second_13 -180;
+    pos @kc7_first_47 @kc7_second_23 -50;
+} kernHorizontalKerninginLatinlookup0;
+
+feature kern {
+
+ script DFLT;
+     language dflt ;
+      lookup kernHorizontalKerninginLatinlookup0;
+
+ script latn;
+     language dflt ;
+      lookup kernHorizontalKerninginLatinlookup0;
+} kern;
+
+feature size {
+  parameters 12.0 0 0 0;
+} size;
+
+@GDEF_Simple = [\space \exclam \quotedbl \numbersign \dollar \ampersand 
+	\quoteright \parenleft \parenright \asterisk \plus \comma \hyphen \period \slash 
+	\zero \one \two \three \four \five \six \seven \eight \nine \colon \semicolon \less 
+	\equal \greater \question \at \A \B \C \D \E \F \G \H \I \J \K \L \M \N \O \P \Q \R \S \T \U \V \W 
+	\X \Y \Z \bracketleft \backslash \bracketright \asciicircum \underscore 
+	\quoteleft \a \b \c \d \e \f \g \h \i \j \k \l \m \n \o \p \q \r \s \t \u \v \w \x \y \z \braceleft 
+	\bar \braceright \asciitilde \exclamdown \cent \sterling \fraction \yen \florin 
+	\section \currency \quotesingle \quotedblleft \guillemotleft \guilsinglleft 
+	\guilsinglright \fi \fl \endash \dagger \daggerdbl \periodcentered \paragraph 
+	\bullet \quotesinglbase \quotedblbase \quotedblright \guillemotright 
+	\ellipsis \questiondown \grave \acute \circumflex \tilde \macron \breve 
+	\dotaccent \dieresis \ring \cedilla \hungarumlaut \ogonek \caron \emdash \AE 
+	\ordfeminine \Lslash \Oslash \OE \ordmasculine \ae \dotlessi \lslash \oslash \oe 
+	\germandbls \onesuperior \logicalnot \mu \trademark \Eth \plusminus \Thorn 
+	\divide \brokenbar \degree \thorn \twosuperior \registered \minus \eth \multiply 
+	\threesuperior \copyright \Aacute \Acircumflex \Adieresis \Agrave \Aring 
+	\Atilde \Ccedilla \Eacute \Ecircumflex \Edieresis \Egrave \Iacute \Icircumflex 
+	\Idieresis \Igrave \Ntilde \Oacute \Ocircumflex \Odieresis \Ograve \Otilde 
+	\Scaron \Uacute \Ucircumflex \Udieresis \Ugrave \Yacute \Ydieresis \Zcaron 
+	\aacute \acircumflex \adieresis \agrave \aring \atilde \ccedilla \eacute 
+	\ecircumflex \edieresis \egrave \iacute \icircumflex \idieresis \igrave \ntilde 
+	\oacute \ocircumflex \odieresis \ograve \otilde \scaron \uacute \ucircumflex 
+	\udieresis \ugrave \yacute \ydieresis \zcaron \Omega \uni03BC \pi \Euro 
+	\afii61289 \estimated \partialdiff \product \summation \uni2219 \radical 
+	\infinity \integral \approxequal \notequal \lessequal \greaterequal \lozenge 
+	\uni00A0 \uni00AD \uni02C9 \uni03A9 \uni2215 \a.superior \o.superior 
+	\one.superior \two.superior \three.superior \uni2206 \uni2010 ];
+@GDEF_Ligature = [\percent \perthousand \onehalf \onequarter \threequarters \f_i 
+	\f_l ];
+
+table GDEF {
+  GlyphClassDef @GDEF_Simple, @GDEF_Ligature, , ;
+
+} GDEF;
+
+table BASE {
+  HorizAxis.BaseTagList ideo romn;
+  HorizAxis.BaseScriptList
+	DFLT romn -170 0,
+	latn romn -170 0;
+} BASE;
+

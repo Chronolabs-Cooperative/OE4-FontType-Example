@@ -348,6 +348,7 @@
 	                    break;
 	            }
 	        }
+	        $hex = str_repeat('0', 24 - strlen($hex)) . $hex;
 	        writeRawFile($glyphpath . DIRECTORY_SEPARATOR . $hex . '.json', json_encode($glyph));
 	    }
 	    writeRawFile($oe4path . DIRECTORY_SEPARATOR . 'files.json', json_encode($file));

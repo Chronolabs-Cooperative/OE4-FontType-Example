@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glyph name="exclamdown" format="1">
+  <advance width="389"/>
+  <unicode hex="00A1"/>
+  <outline>
+    <contour>
+      <point x="134" y="402" type="line"/>
+      <point x="134" y="502" type="line"/>
+      <point x="240" y="502" type="line"/>
+      <point x="240" y="402" type="line"/>
+    </contour>
+    <contour>
+      <point x="148" y="337" type="line"/>
+      <point x="221" y="337" type="line"/>
+      <point x="238" y="-220" type="line"/>
+      <point x="127" y="-220" type="line"/>
+    </contour>
+  </outline>
+  <lib>
+    <dict>
+      <key>com.fontlab.hintData</key>
+      <dict>
+        <key>hhints</key>
+        <array>
+          <dict>
+            <key>position</key>
+            <integer>402</integer>
+            <key>width</key>
+            <integer>100</integer>
+          </dict>
+        </array>
+        <key>vhints</key>
+        <array>
+          <dict>
+            <key>position</key>
+            <integer>134</integer>
+            <key>width</key>
+            <integer>106</integer>
+          </dict>
+          <dict>
+            <key>position</key>
+            <integer>138</integer>
+            <key>width</key>
+            <integer>92</integer>
+          </dict>
+        </array>
+      </dict>
+    </dict>
+  </lib>
+</glyph>

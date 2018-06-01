@@ -558,7 +558,6 @@ if (!function_exists("putRawFile")) {
     }
 }
 
-
 if (!function_exists("getHTMLForm")) {
     /**
      * Get the HTML Forms for the API
@@ -644,70 +643,52 @@ if (!function_exists("getHTMLForm")) {
                 $form[] = "\t</table>";
                 $form[] = "</form>";
                 break;
-            case "releases":
+            case "convert":
+                
+                $charsets = array_map('str_getcsv', file(OE4_CHARSETS_CSV));
+                $licenses = json_decode(file_get_contents(OE4_LICENSES_JSON), true);
+                
                 $form[] = "<form name=\"" . $ua . "\" method=\"POST\" enctype=\"multipart/form-data\" action=\"" . OE4_URL . '/convert.php?key='.$key."\">";
                 $form[] = "\t<table class='oe4-convert' id='oe4-convert' style='vertical-align: top !important; min-width: 98%;'>";
-                $form[] = "\t\t\t<td style='width: 276px;'>";
-                $form[] = "\t\t\t\t<label for='email'>Release Recievers Email:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font></label>";
-                $form[] = "\t\t\t</td>";
-                $form[] = "\t\t\t<td>";
-                $form[] = "\t\t\t\t<input type='textbox' name='".$ua."[email]' id='email' maxlen='198' size='41' />&nbsp;&nbsp;";
-                $form[] = "\t\t\t</td>";
-                $form[] = "\t\t\t<td>&nbsp;</td>";
                 $form[] = "\t\t<tr>";
-                $form[] = "\t\t\t<td style='width: 320px;'>";
-                $form[] = "\t\t\t\t<label for='name'>Release Recievers Name:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font></label>";
+                $form[] = "\t\t\t<td style='width: 276px; vertical-align: top; valign: top;'>";
+                $form[] = "\t\t\t\t<label for='charsets'>Character Sets:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font></label>";
                 $form[] = "\t\t\t</td>";
-                $form[] = "\t\t\t<td>";
-                $form[] = "\t\t\t\t<input type='textbox' name='".$ua."[name]' id='name' maxlen='198' size='41' /><br/>";
+                $form[] = "\t\t\t<td style='border-bottom: 4px solid #0a0a0a; padding-bottom: 13px;'>";
+                foreach($charsets as $row => $values) {
+                    $form[] = "\t\t\t\t<div style='margin: 3px; text-align: center; float: left; width: auto; padding: 7px; border-bottom: 1px dotted #010101; border-left: 2px dotted #212121;'>";
+                    $form[] = "\t\t\t\t\t<input type='checkbox' name='charsets[".$values[0]."]' value='".$values[0]."'".(strpos(' '.$values[0],'utf8')?" checked='checked'":"") ."/>&nbsp;" . $values[1] . "&nbsp;(".$values[0] .")";
+                    $form[] = "\t\t\t\t</div>";
+                }
                 $form[] = "\t\t\t</td>";
-                $form[] = "\t\t\t<td>&nbsp;</td>";
                 $form[] = "\t\t</tr>";
                 $form[] = "\t\t<tr>";
-                $form[] = "\t\t\t<td style='width: 320px;'>";
-                $form[] = "\t\t\t\t<label for='org'>Release Recievers Organisation:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font></label>";
+                $form[] = "\t\t\t<td style='width: 276px; vertical-align: top; valign: top;'>";
+                $form[] = "\t\t\t\t<label for='licenses'>License Font Coverage By:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font></label>";
                 $form[] = "\t\t\t</td>";
-                $form[] = "\t\t\t<td>";
-                $form[] = "\t\t\t\t<input type='textbox' name='".$ua."[org]' id='org' maxlen='198' size='41' /><br/>";
+                $form[] = "\t\t\t<td style='padding-top: 23px;'>";
+                foreach($licenses as $key => $values) {
+                    $form[] = "\t\t\t\t<div style='margin: 3px; text-align: center; float: left; width: auto; padding: 7px; border-bottom: 1px dotted #010101; border-left: 2px dotted #212121;'>";
+                    $form[] = "\t\t\t\t\t<input type='checkbox' name='licenses[".$key."]' value='".$key."'/>&nbsp;".$values['title'] . "&nbsp;(".$values['code'] .")";
+                    $form[] = "\t\t\t\t</div>";
+                }
                 $form[] = "\t\t\t</td>";
-                $form[] = "\t\t\t<td>&nbsp;</td>";
                 $form[] = "\t\t</tr>";
                 $form[] = "\t\t<tr>";
-                $form[] = "\t\t<tr>";
-                $form[] = "\t\t\t<td style='width: 320px;'>";
-                $form[] = "\t\t\t\t<label for='callback'>Release API Callback URL:</label>";
+                $form[] = "\t\t\t<td colspan='3' style='padding-left:64px;'>";
+                $form[] = "\t\t\t\t<input type='hidden' name='op' value='convert'>";
+                $form[] = "\t\t\t\t<input type='submit' value='Convert to *.EO4' name='submit' style='padding:11px; font-size:111%;'>";
                 $form[] = "\t\t\t</td>";
-                $form[] = "\t\t\t<td>";
-                $form[] = "\t\t\t\t<input type='textbox' name='".$ua."[callback]' id='callback' size='41' value='".(empty($callback)?'':$callback)."' ".(!empty($callback)?'disabled=\'disabled\'':'') ." /><br/>";
-                if (!empty($callback))
-                    $form[] = "\t\t\t\t<input type='hidden' name='".$ua."[callback]' value='" . (empty($callback)?'':$callback) ."'>";
-                    $form[] = "\t\t\t</td>";
-                    $form[] = "\t\t\t<td>&nbsp;</td>";
-                    $form[] = "\t\t</tr>";
-                    $form[] = "\t\t<tr>";
-                    $form[] = "\t\t\t<td>";
-                    $form[] = "\t\t\t\t<label for='method'><strong>Do you wish to subscribe/unsubsribe</strong>:&nbsp;<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold'>*</font></label>";
-                    $form[] = "\t\t\t</td>";
-                    $form[] = "\t\t\t<td>";
-                    $form[] = "\t\t\t\t<input type='radio' name='".$ua."[method]' id='method-subscribed' value='subscribed' checked='checked' / ><label for='method-subscribed'>Subscribed</label>&nbsp;&nbsp;<input type='radio' name='".$ua."[method]' id='method-unsubscribed' value='unsubscribed' / ><label for='method-unsubscribed'>Unsubscribed</label>";
-                    $form[] = "\t\t\t</td>";
-                    $form[] = "\t\t\t<td>&nbsp;</td>";
-                    $form[] = "\t\t</tr>";
-                    $form[] = "\t\t<tr>";
-                    $form[] = "\t\t\t<td colspan='3' style='padding-left:64px;'>";
-                    $form[] = "\t\t\t\t<input type='hidden' name='".$ua."[return]' value='" . (empty($clause)?$GLOBALS['protocol'] . $_SERVER["HTTP_HOST"]:$clause) ."'>";
-                    $form[] = "\t\t\t\t<input type='submit' value='Set Subscription' name='submit' style='padding:11px; font-size:111%;'>";
-                    $form[] = "\t\t\t</td>";
-                    $form[] = "\t\t</tr>";
-                    $form[] = "\t\t<tr>";
-                    $form[] = "\t\t\t<td colspan='3' style='padding-top: 8px; padding-bottom: 14px; padding-right:35px; text-align: right;'>";
-                    $form[] = "\t\t\t\t<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold;'>* </font><font  style='color: rgb(10,10,10); font-size: 99%; font-weight: bold'><em style='font-size: 76%'>~ Required Field for Form Submission</em></font>";
-                    $form[] = "\t\t\t</td>";
-                    $form[] = "\t\t</tr>";
-                    $form[] = "\t\t<tr>";
-                    $form[] = "\t</table>";
-                    $form[] = "</form>";
-                    break;
+                $form[] = "\t\t</tr>";
+                $form[] = "\t\t<tr>";
+                $form[] = "\t\t\t<td colspan='3' style='padding-top: 8px; padding-bottom: 14px; padding-right:35px; text-align: right;'>";
+                $form[] = "\t\t\t\t<font style='color: rgb(250,0,0); font-size: 139%; font-weight: bold;'>* </font><font  style='color: rgb(10,10,10); font-size: 99%; font-weight: bold'><em style='font-size: 76%'>~ Required Field for Form Submission</em></font>";
+                $form[] = "\t\t\t</td>";
+                $form[] = "\t\t</tr>";
+                $form[] = "\t\t<tr>";
+                $form[] = "\t</table>";
+                $form[] = "</form>";
+                break;
         }
         return implode("\n", $form);
     }

@@ -1,6 +1,6 @@
 ## Chronolabs Cooperative presents
 # OE4 Font File Type Generator Example  
-## Version: 1.0.1
+## Version: 1.0.2 (stable)
 ## by. Dr. Simon Antony Roberts (Sydney) <fontmasters@snails.email>
 ### The font file type OE4 File Format Generation Example
 
