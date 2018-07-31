@@ -203,6 +203,13 @@
 	                }
 	                if (formatElement($fieldkey) == 'X-Height') {
 	                    $fontdata['Z-Depth'] = false;
+	                    $fontdata['X-Pitch'] = false;
+	                    $fontdata['Y-Pitch'] = false;
+	                    $fontdata['Z-Pitch'] = false;
+	                    $fontdata['X-Radius'] = false;
+	                    $fontdata['Y-Radius'] = false;
+	                    $fontdata['X-Angel'] = false;
+	                    $fontdata['Y-Angel'] = false;
 	                }
 	                if (formatElement($fieldkey) == 'Descender') {
 	                    $fontdata['Depther'] = false;
@@ -299,6 +306,13 @@
 	                                if (formatElement($fkey) == 'Y') {
 	                                    $glyph['Contour'][$ckey]['Point'][$pkey]['Z'] = false;
 	                                    $glyph['Contour'][$ckey]['Point'][$pkey]['D'] = false;
+	                                    $glyph['Contour'][$ckey]['Point'][$pkey]['XP'] = '0.0';
+	                                    $glyph['Contour'][$ckey]['Point'][$pkey]['YP'] = '0.0';
+	                                    $glyph['Contour'][$ckey]['Point'][$pkey]['ZP'] = '0.0';
+	                                    $glyph['Contour'][$ckey]['Point'][$pkey]['XR'] = '0.0';
+	                                    $glyph['Contour'][$ckey]['Point'][$pkey]['YR'] = '0.0';
+	                                    $glyph['Contour'][$ckey]['Point'][$pkey]['XA'] = '0.0';
+	                                    $glyph['Contour'][$ckey]['Point'][$pkey]['YA'] = '0.0';
 	                                }
 	                            }
 	                            unset($pvalue['@attributes']);
