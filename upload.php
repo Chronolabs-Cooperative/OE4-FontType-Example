@@ -202,14 +202,14 @@
 	                    $fontdata['Cap-Scale'] = '0.0';
 	                }
 	                if (formatElement($fieldkey) == 'X-Height') {
-	                    $fontdata['Z-Depth'] = false;
-	                    $fontdata['X-Pitch'] = false;
-	                    $fontdata['Y-Pitch'] = false;
-	                    $fontdata['Z-Pitch'] = false;
-	                    $fontdata['X-Radius'] = false;
-	                    $fontdata['Y-Radius'] = false;
-	                    $fontdata['X-Angel'] = false;
-	                    $fontdata['Y-Angel'] = false;
+	                    $fontdata['Z-Depth'] = '0.0';
+	                    $fontdata['X-Pitch'] = '0.0';
+	                    $fontdata['Y-Pitch'] = '0.0';
+	                    $fontdata['Z-Pitch'] = '0.0';
+	                    $fontdata['X-Radius'] = '0.0';
+	                    $fontdata['Y-Radius'] = '0.0';
+	                    $fontdata['X-Angle'] = '0.0';
+	                    $fontdata['Y-Angle'] = '0.0';
 	                }
 	                if (formatElement($fieldkey) == 'Descender') {
 	                    $fontdata['Depther'] = false;
